@@ -20,5 +20,5 @@ $emitter->on('foo', function() {
 
 \Amp\Loop::run(function() use($emitter) {
     $eventTarget = new \stdClass();
-    $emitter->emit('foo', $eventTarget);
+    $emitter->emit(new \Cspray\Labrador\AsyncEvent\StandardEvent('foo', $eventTarget));
 });

@@ -7,9 +7,15 @@ use Amp\Delayed;
 use Amp\Loop;
 use Cspray\Labrador\AsyncEvent\AmpEmitter;
 use Cspray\Labrador\AsyncEvent\Event;
+use Cspray\Labrador\AsyncEvent\StandardEvent;
 use PHPUnit\Framework\TestCase as UnitTestCase;
 
 class AmpEmitterTest extends UnitTestCase {
+
+    private function standardEvent(string $name, $target = null, array $eventData = []) {
+        $target = $target ?? new \stdClass();
+        return new StandardEvent($name, $target, $eventData);
+    }
 
     public function testRegisteringEventListenerIncrementsListenerCount() {
         $subject = new AmpEmitter();
@@ -77,7 +83,7 @@ class AmpEmitterTest extends UnitTestCase {
         });
 
         Loop::run(function() use($subject) {
-            $subject->emit('foo', new \stdClass());
+            $subject->emit($this->standardEvent('foo'));
         });
 
         $this->assertSame(['foo'], $data->data);
@@ -104,7 +110,7 @@ class AmpEmitterTest extends UnitTestCase {
         });
 
         Loop::run(function() use($subject) {
-            $subject->emit('foo', new \stdClass());
+            $subject->emit($this->standardEvent('foo'));
         });
 
         $this->assertSame([1,2,3,4,5,6], $data->data);
@@ -119,7 +125,7 @@ class AmpEmitterTest extends UnitTestCase {
         });
 
         Loop::run(function() use($subject, $data) {
-            $promise = $subject->emit('foo', new \stdClass());
+            $promise = $subject->emit($this->standardEvent('foo'));
             $promise->onResolve(function() use($data) {
                 $data->data[] = 2;
             });
@@ -144,7 +150,7 @@ class AmpEmitterTest extends UnitTestCase {
         });
 
         Loop::run(function() use($subject, $data) {
-            $promise = $subject->emit('foobar', new \stdClass());
+            $promise = $subject->emit($this->standardEvent('foobar'));
             $promise->onResolve(function() use($data) {
                 $data->data[] = 2;
             });
@@ -162,7 +168,7 @@ class AmpEmitterTest extends UnitTestCase {
         });
 
         Loop::run(function() use($subject, $exception) {
-            $promise = $subject->emit('foobar', new \stdClass());
+            $promise = $subject->emit($this->standardEvent('foobar'));
             $promise->onResolve(function(?\Throwable $error, ?array $result = null) use($exception) {
                 $this->assertSame($result[0][0]->getMessage(), $exception->getMessage());
             });
@@ -185,7 +191,7 @@ class AmpEmitterTest extends UnitTestCase {
 
 
         Loop::run(function() use($subject, $data) {
-            $promise = $subject->emit('foobar', new \stdClass());
+            $promise = $subject->emit($this->standardEvent('foobar'));
             $promise->onResolve(function() use($data) {
                 $this->assertSame(['before', 'after'], $data->data);
             });
@@ -211,7 +217,7 @@ class AmpEmitterTest extends UnitTestCase {
         });
 
         Loop::run(function() use($subject) {
-            $promise = $subject->emit('something', new \stdClass());
+            $promise = $subject->emit($this->standardEvent('something'));
             $promise->onResolve(function($error = null, $result) {
                 $this->assertSame([1,2,3], $result[1]);
             });
@@ -228,7 +234,7 @@ class AmpEmitterTest extends UnitTestCase {
         });
 
         Loop::run(function() use($subject) {
-            yield $subject->emit('something', new \stdClass());
+            yield $subject->emit($this->standardEvent('something'));
         });
 
         $this->assertInstanceOf(Event::class, $data->data[0]);
@@ -245,7 +251,7 @@ class AmpEmitterTest extends UnitTestCase {
         });
 
         Loop::run(function() use($subject) {
-            yield $subject->emit('something', new \stdClass, [1,2,3]);
+            yield $subject->emit($this->standardEvent('something'));
         });
     }
 
@@ -258,7 +264,7 @@ class AmpEmitterTest extends UnitTestCase {
         }, [1,2,3]);
 
         Loop::run(function() use($subject) {
-            yield $subject->emit('something', new \stdClass());
+            yield $subject->emit($this->standardEvent('something'));
         });
         $this->assertSame([1,2,3,'id' => $id], $data->data);
     }
@@ -272,8 +278,8 @@ class AmpEmitterTest extends UnitTestCase {
         });
 
         Loop::run(function() use($subject, $data) {
-            yield $subject->emit('something', new \stdClass());
-            yield $subject->emit('something', new \stdClass());
+            yield $subject->emit($this->standardEvent('something'));
+            yield $subject->emit($this->standardEvent('something'));
         });
         $this->assertSame([1], $data->data);
     }
@@ -299,7 +305,7 @@ class AmpEmitterTest extends UnitTestCase {
         });
 
         Loop::run(function() use($subject) {
-            $subject->emit('foo', new \stdClass());
+            $subject->emit($this->standardEvent('foo'));
         });
 
         $this->assertSame([1,2,3,4,5,6], $data->data);

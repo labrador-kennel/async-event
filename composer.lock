@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "4cc05659850b1e180c65e940a8b1c538",
+    "content-hash": "49a455b93468e1e617aefb950df649c8",
     "packages": [
         {
             "name": "amphp/amp",
@@ -79,6 +79,45 @@
                 "promise"
             ],
             "time": "2017-05-04T15:27:50+00:00"
+        },
+        {
+            "name": "cspray/labrador-exceptions",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/labrador-kennel/exception.git",
+                "reference": "5b98e8cd1456e783545ad8c21cc2aac1959bdf65"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/labrador-kennel/exception/zipball/5b98e8cd1456e783545ad8c21cc2aac1959bdf65",
+                "reference": "5b98e8cd1456e783545ad8c21cc2aac1959bdf65",
+                "shasum": ""
+            },
+            "require": {
+                "php": "~7.1"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Cspray\\Labrador\\Exception\\": [
+                        "src/"
+                    ]
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Charles Sprayberry",
+                    "email": "cspray+labrador@gmail.com",
+                    "homepage": "http://labrador.cspray.net",
+                    "role": "Benevolent Dictator For Life"
+                }
+            ],
+            "time": "2017-05-13T04:23:17+00:00"
         },
         {
             "name": "psr/log",

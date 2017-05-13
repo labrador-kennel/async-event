@@ -1,6 +1,6 @@
 # Labrador Async Event
 
-A library to emit events for applications running Amp's Event Loop.
+A library to emit events for applications or libraries running Amp's Event Loop.
 
 ## Requirements
 
@@ -15,7 +15,12 @@ It is recommended you install Labrador Async Event using Composer.
 composer require cspray/labrador-async-event
 ```
 
-### Usage
+## The Basics
 
-Please check out the `examples/` directory for working examples of how to use the library.
-  
+It is important to note that AsyncEvent is intended to emit events in a running Amp event 
+loop. **If you do not either call `Emitter::emit()` within `Loop::run()` or you use 
+`Amp\wait()` on the Promise returned from the `Emitter::emit()` call your listeners will 
+never be called!**
+or an Amp\Promise and see them resolved.
+
+

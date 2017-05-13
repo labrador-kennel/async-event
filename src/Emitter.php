@@ -15,7 +15,7 @@ interface Emitter {
 
     public function once(string $event, callable $listener, array $listenerData = []) : string;
 
-    public function emit(string $event, $target, array $eventData = []) : Promise;
+    public function emit(Event $event) : Promise;
 
     public function listenerCount(string $event) : int;
 

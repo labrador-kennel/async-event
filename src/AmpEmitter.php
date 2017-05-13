@@ -39,12 +39,11 @@ class AmpEmitter implements AsyncEvent\Emitter {
         return $this->on($event, $callback, $listenerData);
     }
 
-    public function emit(string $event, $target, array $eventData = []) : Promise {
+    public function emit(Event $event) : Promise {
         $promises = [];
-        $eventObject = new AsyncEvent\StandardEvent($event, $target, $eventData);
-        foreach ($this->listeners($event) as $listenerId => list($listener, $listenerData)) {
-            $listenerData = array_merge($listenerData, ['id' => $event . ':' . $listenerId]);
-            $promises[] = $this->executeListener($eventObject, $listener, $listenerData);
+        foreach ($this->listeners($event->name()) as $listenerId => list($listener, $listenerData)) {
+            $listenerData = array_merge($listenerData, ['id' => $event->name() . ':' . $listenerId]);
+            $promises[] = $this->executeListener($event, $listener, $listenerData);
         }
 
         return Promise\any($promises);
