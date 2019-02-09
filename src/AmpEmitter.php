@@ -16,9 +16,8 @@ class AmpEmitter implements AsyncEvent\Emitter {
         }
 
         $internalId = bin2hex(random_bytes(8));
-        $id = $event . ':' . $internalId;
         $this->listeners[$event][$internalId] = [$listener, $listenerData];
-        return $id;
+        return $event . ':' . $internalId;
     }
 
     public function off(string $listenerId) {
