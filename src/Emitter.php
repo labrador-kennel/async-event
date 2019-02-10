@@ -20,5 +20,4 @@ interface Emitter {
     public function listenerCount(string $event) : int;
 
     public function listeners(string $event) : iterable;
-
 }

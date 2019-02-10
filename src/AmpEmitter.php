@@ -2,8 +2,7 @@
 
 namespace Cspray\Labrador\AsyncEvent;
 
-use Amp\Deferred;
-use Amp\Loop;
+use function Amp\call;
 use Amp\Promise;
 use Cspray\Labrador\AsyncEvent;
 
@@ -17,9 +16,8 @@ class AmpEmitter implements AsyncEvent\Emitter {
         }
 
         $internalId = bin2hex(random_bytes(8));
-        $id = $event . ':' . $internalId;
         $this->listeners[$event][$internalId] = [$listener, $listenerData];
-        return $id;
+        return $event . ':' . $internalId;
     }
 
     public function off(string $listenerId) {
@@ -50,24 +48,7 @@ class AmpEmitter implements AsyncEvent\Emitter {
     }
 
     private function executeListener(AsyncEvent\Event $event, callable $listener, array $listenerData) : Promise {
-        $deferred = new Deferred();
-
-        Loop::defer(function() use($event, $listener, $deferred, $listenerData) {
-            try {
-                $listenerResult = $listener($event, $listenerData);
-                if ($listenerResult instanceof \Generator) {
-                    $listenerResult = yield from $listenerResult;
-                } elseif ($listenerResult instanceof Promise) {
-                    $listenerResult = yield $listenerResult;
-                }
-
-                $deferred->resolve($listenerResult);
-            } catch (\Throwable $throwable) {
-                $deferred->fail($throwable);
-            }
-        });
-
-        return $deferred->promise();
+        return call($listener, $event, $listenerData);
     }
 
     public function listenerCount(string $event) : int {
@@ -77,5 +58,4 @@ class AmpEmitter implements AsyncEvent\Emitter {
     public function listeners(string $event) : iterable {
         return isset($this->listeners[$event]) ? $this->listeners[$event] : [];
     }
-
 }

@@ -31,5 +31,4 @@ class StandardEvent implements Event {
     public function createdAt() : \DateTimeImmutable {
         return $this->createdAt;
     }
-
 }

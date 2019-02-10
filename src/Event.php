@@ -11,5 +11,4 @@ interface Event {
     public function data() : array;
 
     public function createdAt() : \DateTimeImmutable;
-
 }

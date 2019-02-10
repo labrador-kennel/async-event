@@ -24,7 +24,10 @@ class StandardEventFactoryTest extends UnitTestCase {
             return new FooEventStub($target, $eventData);
         });
 
-        $this->assertInstanceOf(FooEventStub::class, $factory->create('foo.event', new \stdClass()));
+        $this->assertInstanceOf(
+            FooEventStub::class,
+            $factory->create('foo.event', new \stdClass())
+        );
     }
 
     public function testObjectMustBeInstanceOfEvent() {
@@ -34,7 +37,8 @@ class StandardEventFactoryTest extends UnitTestCase {
         });
 
         $this->expectException(InvalidTypeException::class);
-        $this->expectExceptionMessage('Factory functions MUST return an instance of ' . Event::class . ' but "bar.event" returned "string".');
+        $msg = 'Factory functions MUST return an instance of ' . Event::class . ' but "bar.event" returned "string".';
+        $this->expectExceptionMessage($msg);
 
         $factory->create('bar.event', new \stdClass());
     }
@@ -46,7 +50,8 @@ class StandardEventFactoryTest extends UnitTestCase {
         });
 
         $this->expectException(InvalidTypeException::class);
-        $this->expectExceptionMessage('Factory functions MUST return an instance of ' . Event::class . ' with the same name as "bar.event"');
+        $msg = 'Factory functions MUST return an instance of ' . Event::class . ' with the same name as "bar.event"';
+        $this->expectExceptionMessage($msg);
 
         $factory->create('bar.event', new \stdClass());
     }
@@ -61,5 +66,4 @@ class StandardEventFactoryTest extends UnitTestCase {
         $this->assertSame($target, $event->target());
         $this->assertSame([], $event->data());
     }
-
 }

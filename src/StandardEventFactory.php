@@ -40,5 +40,4 @@ class StandardEventFactory implements EventFactory {
     public function register(string $eventName, callable $factoryFunction) {
         $this->eventFactories[$eventName] = $factoryFunction;
     }
-
 }
