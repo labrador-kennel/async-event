@@ -65,8 +65,8 @@ class AmpEmitterTest extends UnitTestCase {
 
         $idOne = explode(':', $subject->on('something', $callbackOne))[1];
         $idTwo = explode(':', $subject->on('something', $callbackTwo))[1];
-
-        $this->assertSame([$idOne => [$callbackOne, []], $idTwo => [$callbackTwo, []]], $subject->listeners('something'));
+        $expected = [$idOne => [$callbackOne, []], $idTwo => [$callbackTwo, []]];
+        $this->assertSame($expected, $subject->listeners('something'));
     }
 
     public function testListenerCountWithNoRegisteredListeners() {
@@ -225,7 +225,7 @@ class AmpEmitterTest extends UnitTestCase {
 
         Loop::run(function() use($subject) {
             $promise = $subject->emit($this->standardEvent('something'));
-            $promise->onResolve(function($error = null, $result) {
+            $promise->onResolve(function($error, $result) {
                 $this->assertSame([1,2,3], $result[1]);
             });
         });
