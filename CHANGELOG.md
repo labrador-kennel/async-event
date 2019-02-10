@@ -1,5 +1,10 @@
 # Changelog
 
+## v2.0.0-rc1 - 2019-02-10
+
+- Updated PHP to 7.2 as well as minor version updates to most packages.
+- Now adheres to the Labrador Coding Standard.
+
 ## v1.2.0 - 2018-01-13
 
 - Update amphp/amp, phpunit/phpunit, amphp/phpunit-util
