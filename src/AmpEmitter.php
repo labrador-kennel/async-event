@@ -58,5 +58,4 @@ class AmpEmitter implements AsyncEvent\Emitter {
     public function listeners(string $event) : iterable {
         return isset($this->listeners[$event]) ? $this->listeners[$event] : [];
     }
-
 }

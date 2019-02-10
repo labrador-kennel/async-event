@@ -61,5 +61,4 @@ class StandardEventFactoryTest extends UnitTestCase {
         $this->assertSame($target, $event->target());
         $this->assertSame([], $event->data());
     }
-
 }

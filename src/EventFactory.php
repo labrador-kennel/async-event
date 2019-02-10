@@ -25,5 +25,4 @@ interface EventFactory {
      * @throws \Cspray\Labrador\Exception\InvalidArgumentException
      */
     public function create(string $eventName, $target, array $eventData = [], ...$eventConstructorArgs) : Event;
-
 }

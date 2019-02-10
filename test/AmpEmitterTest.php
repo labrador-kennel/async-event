@@ -19,19 +19,23 @@ class AmpEmitterTest extends UnitTestCase {
 
     public function testRegisteringEventListenerIncrementsListenerCount() {
         $subject = new AmpEmitter();
-        $subject->on('something', function() {});
+        $subject->on('something', function() {
+        });
 
         $this->assertSame(1, $subject->listenerCount('something'));
 
-        $subject->on('something', function() {});
+        $subject->on('something', function() {
+        });
 
         $this->assertSame(2, $subject->listenerCount('something'));
     }
 
     public function testRemovingEventListenerDecrementsListenerCount() {
         $subject = new AmpEmitter();
-        $one = $subject->on('something', function() {});
-        $two = $subject->on('something', function() {});
+        $one = $subject->on('something', function() {
+        });
+        $two = $subject->on('something', function() {
+        });
 
         $this->assertSame(2, $subject->listenerCount('something'));
 
@@ -46,15 +50,18 @@ class AmpEmitterTest extends UnitTestCase {
 
     public function testRegisteringEventListenerReturnsCorrectIdFormat() {
         $subject = new AmpEmitter();
-        $id = $subject->on('something', function() {});
+        $id = $subject->on('something', function() {
+        });
 
         $this->assertStringMatchesFormat('something:%x', $id);
     }
 
     public function testRegisteringEventListenerIsReturnedInListeners() {
         $subject = new AmpEmitter();
-        $callbackOne = function() { };
-        $callbackTwo = function() { };
+        $callbackOne = function() {
+        };
+        $callbackTwo = function() {
+        };
 
         $idOne = explode(':', $subject->on('something', $callbackOne))[1];
         $idTwo = explode(':', $subject->on('something', $callbackTwo))[1];
@@ -310,5 +317,4 @@ class AmpEmitterTest extends UnitTestCase {
 
         $this->assertSame([1,2,3,4,5,6], $data->data);
     }
-
 }
