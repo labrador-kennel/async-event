@@ -1,26 +1,30 @@
 # Labrador Async Event
 
-A library to emit events for applications or libraries running Amp's Event Loop.
+Trigger semantic Events with listeners implicitly running on Amp's event loop.
 
 ## Requirements
 
-- PHP 7.1+
-- [amphp/amp](https://github.com/amphp/amp)
+- PHP 7.2+
+- [amphp/amp]
 
 ## Installation
 
-It is recommended you install Labrador Async Event using Composer.
+There is only 1 supported method for installing Labrador packages; [Composer]
 
 ```
 composer require cspray/labrador-async-event
 ```
 
-## The Basics
+## Documentation
 
-It is important to note that AsyncEvent is intended to emit events in a running Amp event 
-loop. **If you do not either call `Emitter::emit()` within `Loop::run()` or you use 
-`Amp\wait()` on the Promise returned from the `Emitter::emit()` call your listeners will 
-never be called!**
-or an Amp\Promise and see them resolved.
+Labrador Async Event is thoroughly documented in the [docs] directory. Please check this out if you'd like to 
+learn more about using Labrador Async Event.
 
+## Governance
 
+All Labrador packages adhere to the rules laid out in the [Labrador Governance repo]
+
+[amphp/amp]: https://amphp.org
+[Composer]: https://getcomposer.org
+[docs]: ./docs
+[Labrador Governance repo]: https://github.com/labrador-kennel/governance
