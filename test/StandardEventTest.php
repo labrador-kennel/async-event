@@ -15,5 +15,4 @@ class StandardEventTest extends TestCase {
         $this->assertEmpty($diff->s);
         $this->assertNotEmpty($diff->f);
     }
-
 }
