@@ -1,7 +1,7 @@
 {
   "name": "cspray/labrador-async-event",
-  "description": "",
-  "keywords": [],
+  "description": "Trigger semantic application events powered by Amp Event Loop",
+  "keywords": ["amphp", "event", "emitter", "labrador-kennel"],
   "license": "MIT",
   "authors": [
     {
