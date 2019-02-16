@@ -1,9 +1,10 @@
 # Changelog
 
-## v2.0.0-rc1 - 2019-02-10
+## v2.0.0-rc1 - 2019-02-16
 
 - Updated PHP to 7.2 as well as minor version updates to most packages.
 - Now adheres to the Labrador Coding Standard.
+- Major doc improvements
 
 ## v1.2.0 - 2018-01-13
 

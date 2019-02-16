@@ -31,7 +31,7 @@ class AmpEmitter implements AsyncEvent\Emitter {
         $callback = function($event, $listenerData) use($listener) {
             $listenerId = $listenerData['id'];
             $this->off($listenerId);
-            return $this->executeListener($event, $listener, $listenerData);
+            return call($listener, $event, $listenerData);
         };
         $callback = $callback->bindTo($this, $this);
         return $this->on($event, $callback, $listenerData);
@@ -41,14 +41,10 @@ class AmpEmitter implements AsyncEvent\Emitter {
         $promises = [];
         foreach ($this->listeners($event->name()) as $listenerId => list($listener, $listenerData)) {
             $listenerData = array_merge($listenerData, ['id' => $event->name() . ':' . $listenerId]);
-            $promises[] = $this->executeListener($event, $listener, $listenerData);
+            $promises[] = call($listener, $event, $listenerData);
         }
 
         return Promise\any($promises);
-    }
-
-    private function executeListener(AsyncEvent\Event $event, callable $listener, array $listenerData) : Promise {
-        return call($listener, $event, $listenerData);
     }
 
     public function listenerCount(string $event) : int {

@@ -1,12 +1,14 @@
 {
   "name": "cspray/labrador-async-event",
+  "description": "Trigger semantic application events powered by Amp Event Loop",
+  "keywords": ["amphp", "event", "emitter", "labrador-kennel"],
   "license": "MIT",
   "authors": [
     {
       "name": "Charles Sprayberry",
-      "email": "cspray+labrador@gmail.com",
-      "homepage": "http://cspray.net",
-      "role": "Benevelent Dictator for Life"
+      "email": "contact@labrador-kennel.io",
+      "homepage": "https://labrador-kennel.io",
+      "role": "Project Maintainer"
     }
   ],
   "require": {
