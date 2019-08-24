@@ -14,12 +14,13 @@
   "require": {
     "php": "~7.2",
     "amphp/amp": "~2.0",
-    "cspray/labrador-exceptions": "~1.0"
+    "cspray/labrador-exceptions": "~1.0",
+    "cspray/yape": "^1.1"
   },
   "require-dev": {
-    "amphp/phpunit-util": "~1.0",
-    "cspray/labrador-coding-standard": "0.1.0",
-    "phpunit/phpunit": "~6.5"
+    "amphp/phpunit-util": "~1.1",
+    "cspray/labrador-coding-standard": "0.2.0",
+    "phpunit/phpunit": "~8"
   },
   "autoload": {
     "psr-4": {

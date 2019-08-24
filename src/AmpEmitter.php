@@ -2,13 +2,15 @@
 
 namespace Cspray\Labrador\AsyncEvent;
 
-use function Amp\call;
 use Amp\Promise;
 use Cspray\Labrador\AsyncEvent;
+
+use function Amp\call;
 
 class AmpEmitter implements AsyncEvent\Emitter {
 
     private $listeners = [];
+    private $defaultCombinator;
 
     public function on(string $event, callable $listener, array $listenerData = []) : string {
         if (!isset($this->listeners[$event])) {
@@ -37,14 +39,15 @@ class AmpEmitter implements AsyncEvent\Emitter {
         return $this->on($event, $callback, $listenerData);
     }
 
-    public function emit(Event $event) : Promise {
+    public function emit(Event $event, PromiseCombinator $promiseCombinator = null) : Promise {
         $promises = [];
         foreach ($this->listeners($event->name()) as $listenerId => list($listener, $listenerData)) {
             $listenerData = array_merge($listenerData, ['id' => $event->name() . ':' . $listenerId]);
             $promises[] = call($listener, $event, $listenerData);
         }
 
-        return Promise\any($promises);
+        $promiseCombinator = $promiseCombinator ?? $this->getDefaultPromiseCombinator();
+        return $promiseCombinator->combine(...$promises);
     }
 
     public function listenerCount(string $event) : int {
@@ -53,5 +56,13 @@ class AmpEmitter implements AsyncEvent\Emitter {
 
     public function listeners(string $event) : iterable {
         return isset($this->listeners[$event]) ? $this->listeners[$event] : [];
+    }
+
+    public function getDefaultPromiseCombinator() : PromiseCombinator {
+        return $this->defaultCombinator ?? PromiseCombinator::Any();
+    }
+
+    public function setDefaultPromiseCombinator(PromiseCombinator $promiseCombinator) : void {
+        $this->defaultCombinator = $promiseCombinator;
     }
 }
