@@ -360,5 +360,4 @@ class AmpEmitterTest extends AsyncTestCase {
 
         yield $subject->emit($this->standardEvent('foo'));
     }
-
 }

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "bfd815029b656c7917a76643fde68c55",
+    "content-hash": "58c134a72dd3bc05eacb8df4a3482aa2",
     "packages": [
         {
             "name": "amphp/amp",
@@ -124,16 +124,16 @@
         },
         {
             "name": "cspray/yape",
-            "version": "1.0.1",
+            "version": "1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cspray/yape.git",
-                "reference": "78f7054df388146e72d75fe3ac139c6ab430e9e5"
+                "reference": "e30ae1f7ddaff7e06fe038e7a38d536ba0dbb569"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cspray/yape/zipball/78f7054df388146e72d75fe3ac139c6ab430e9e5",
-                "reference": "78f7054df388146e72d75fe3ac139c6ab430e9e5",
+                "url": "https://api.github.com/repos/cspray/yape/zipball/e30ae1f7ddaff7e06fe038e7a38d536ba0dbb569",
+                "reference": "e30ae1f7ddaff7e06fe038e7a38d536ba0dbb569",
                 "shasum": ""
             },
             "require": {
@@ -168,7 +168,7 @@
                 "code generator",
                 "enum"
             ],
-            "time": "2019-08-18T23:51:57+00:00"
+            "time": "2019-08-24T02:20:35+00:00"
         }
     ],
     "packages-dev": [
@@ -219,16 +219,16 @@
         },
         {
             "name": "cspray/labrador-coding-standard",
-            "version": "0.1.0",
+            "version": "0.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/labrador-kennel/coding-standard.git",
-                "reference": "6a6f1ff875c1508fd39420c5eb75c6fd2304a9ee"
+                "reference": "4782858e99ac273d379fd0e18c33cbd2261e0238"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/labrador-kennel/coding-standard/zipball/6a6f1ff875c1508fd39420c5eb75c6fd2304a9ee",
-                "reference": "6a6f1ff875c1508fd39420c5eb75c6fd2304a9ee",
+                "url": "https://api.github.com/repos/labrador-kennel/coding-standard/zipball/4782858e99ac273d379fd0e18c33cbd2261e0238",
+                "reference": "4782858e99ac273d379fd0e18c33cbd2261e0238",
                 "shasum": ""
             },
             "require": {
@@ -249,7 +249,7 @@
                 "coding-style",
                 "php"
             ],
-            "time": "2019-02-10T16:09:08+00:00"
+            "time": "2019-08-24T03:26:56+00:00"
         },
         {
             "name": "doctrine/instantiator",

@@ -19,7 +19,7 @@
   },
   "require-dev": {
     "amphp/phpunit-util": "~1.1",
-    "cspray/labrador-coding-standard": "0.1.0",
+    "cspray/labrador-coding-standard": "0.2.0",
     "phpunit/phpunit": "~8"
   },
   "autoload": {
