@@ -4,6 +4,11 @@ sudo: false
 branches:
   only:
     - master
+
+# We do not need submodules they are only used in docs
+git:
+  submodules: false
+
 php:
   - 7.2
 
