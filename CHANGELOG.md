@@ -1,5 +1,12 @@
 # Changelog
 
+## v2.0.0-rc2 - 2019-08-??
+
+- Added a PromiseCombinator implementation that allows specifying how listener promises should 
+be resolved when an event is emitted. You can set a default PromiseCombinator per emitter or 
+provide a specific PromiseCombinator to each emit call.
+- Updated dependency versions
+
 ## v2.0.0-rc1 - 2019-02-16
 
 - Updated PHP to 7.2 as well as minor version updates to most packages.
