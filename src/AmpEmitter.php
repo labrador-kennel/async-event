@@ -5,27 +5,36 @@ namespace Cspray\Labrador\AsyncEvent;
 use Amp\Promise;
 use Cspray\Labrador\AsyncEvent;
 
+use Ds\Map;
+use Ds\Pair;
+use Ds\Vector;
 use function Amp\call;
 
 class AmpEmitter implements AsyncEvent\Emitter {
 
-    private $listeners = [];
+    private $listeners;
     private $defaultCombinator;
 
+    public function __construct() {
+        $this->listeners = new Map();
+    }
+
     public function on(string $event, callable $listener, array $listenerData = []) : string {
-        if (!isset($this->listeners[$event])) {
-            $this->listeners[$event] = [];
+        if (!$this->listeners->hasKey($event)) {
+            $this->listeners->put($event, new Map());
         }
 
+        /** @var Map $eventMap */
         $internalId = bin2hex(random_bytes(8));
-        $this->listeners[$event][$internalId] = [$listener, $listenerData];
+        $this->listeners->get($event)->put($internalId, new Pair($listener, $listenerData));
+
         return $event . ':' . $internalId;
     }
 
     public function off(string $listenerId) {
         list($event, $id) = explode(':', $listenerId);
-        if (isset($this->listeners[$event]) && isset($this->listeners[$event][$id])) {
-            unset($this->listeners[$event][$id]);
+        if ($this->listeners->hasKey($event) && $this->listeners->get($event)->hasKey($id)) {
+            $this->listeners->get($event)->remove($id);
         }
     }
 
@@ -41,21 +50,21 @@ class AmpEmitter implements AsyncEvent\Emitter {
 
     public function emit(Event $event, PromiseCombinator $promiseCombinator = null) : Promise {
         $promises = [];
-        foreach ($this->listeners($event->name()) as $listenerId => list($listener, $listenerData)) {
-            $listenerData = array_merge($listenerData, ['id' => $event->name() . ':' . $listenerId]);
-            $promises[] = call($listener, $event, $listenerData);
-        }
+        $this->listeners($event->name())->map(function($listenerId, $listenerPair) use($event, &$promises) {
+            $listenerData = array_merge($listenerPair->value, ['id' => $event->name() . ':' . $listenerId]);
+            $promises[] = call($listenerPair->key, $event, $listenerData);
+        });
 
         $promiseCombinator = $promiseCombinator ?? $this->getDefaultPromiseCombinator();
         return $promiseCombinator->combine(...$promises);
     }
 
     public function listenerCount(string $event) : int {
-        return isset($this->listeners[$event]) ? count($this->listeners[$event]) : 0;
+        return count($this->listeners->get($event, []));
     }
 
-    public function listeners(string $event) : iterable {
-        return isset($this->listeners[$event]) ? $this->listeners[$event] : [];
+    public function listeners(string $event) : Map {
+        return $this->listeners->get($event, new Map());
     }
 
     public function getDefaultPromiseCombinator() : PromiseCombinator {
