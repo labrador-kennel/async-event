@@ -3,6 +3,7 @@
 namespace Cspray\Labrador\AsyncEvent;
 
 use Amp\Promise;
+use Ds\Map;
 
 /**
  * Implementations represent
@@ -21,7 +22,7 @@ interface Emitter {
 
     public function listenerCount(string $event) : int;
 
-    public function listeners(string $event) : iterable;
+    public function listeners(string $event) : Map;
 
     public function getDefaultPromiseCombinator() : PromiseCombinator;
 

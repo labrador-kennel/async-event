@@ -9,13 +9,18 @@ declare(strict_types = 1);
 namespace Cspray\Labrador\AsyncEvent;
 
 use Cspray\Labrador\Exception\InvalidTypeException;
+use Ds\Map;
 
 class StandardEventFactory implements EventFactory {
 
-    private $eventFactories = [];
+    private $eventFactories;
+
+    public function __construct() {
+        $this->eventFactories = new Map();
+    }
 
     public function create(string $eventName, $target, array $eventData = [], ...$args) : Event {
-        if (!isset($this->eventFactories[$eventName])) {
+        if (!$this->eventFactories->hasKey($eventName)) {
             return new StandardEvent($eventName, $target, $eventData);
         }
 
@@ -38,6 +43,6 @@ class StandardEventFactory implements EventFactory {
     }
 
     public function register(string $eventName, callable $factoryFunction) {
-        $this->eventFactories[$eventName] = $factoryFunction;
+        $this->eventFactories->put($eventName, $factoryFunction);
     }
 }

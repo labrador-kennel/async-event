@@ -4,12 +4,18 @@ sudo: false
 branches:
   only:
     - master
+
+# We do not need submodules they are only used in docs
+git:
+  submodules: false
+
 php:
   - 7.2
 
 before_script:
+  - pecl install ds
   - composer self-update
-  - composer install --no-progress --no-suggest --dev
+  - composer install --no-progress --no-suggest
 script:
   - vendor/bin/labrador-cs src/ test/
   - vendor/bin/phpunit --coverage-clover=coverage.clover

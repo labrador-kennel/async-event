@@ -12,6 +12,7 @@ use Cspray\Labrador\AsyncEvent\AmpEmitter;
 use Cspray\Labrador\AsyncEvent\Event;
 use Cspray\Labrador\AsyncEvent\PromiseCombinator;
 use Cspray\Labrador\AsyncEvent\StandardEvent;
+use Ds\Pair;
 
 class AmpEmitterTest extends AsyncTestCase {
 
@@ -82,8 +83,8 @@ class AmpEmitterTest extends AsyncTestCase {
 
         $idOne = explode(':', $subject->on('something', $callbackOne))[1];
         $idTwo = explode(':', $subject->on('something', $callbackTwo))[1];
-        $expected = [$idOne => [$callbackOne, []], $idTwo => [$callbackTwo, []]];
-        $this->assertSame($expected, $subject->listeners('something'));
+        $expected = [$idOne => new Pair($callbackOne, []), $idTwo => new Pair($callbackTwo, [])];
+        $this->assertEquals($expected, iterator_to_array($subject->listeners('something')));
     }
 
     public function testListenerCountWithNoRegisteredListeners() {
@@ -95,7 +96,7 @@ class AmpEmitterTest extends AsyncTestCase {
     public function testListenersWithNoRegisteredListeners() {
         $subject = new AmpEmitter();
 
-        $this->assertSame([], $subject->listeners('something'));
+        $this->assertSame([], iterator_to_array($subject->listeners('something')));
     }
 
     public function testEmittingEvent() {
