@@ -1,6 +1,6 @@
 # Changelog
 
-## v2.0.0-rc2 - 2019-08-??
+## v2.0.0-rc2 - 2019-08-25
 
 #### Added
 
@@ -21,6 +21,8 @@ setting the 'id' parameter it now sets a '__labrador_kennel_id' parameter. This 
 be depended upon, in future versions it may be removed. If it is determined that listeners need to 
 have a normalized access to the ListenerId outside of the use case for off() the design of the 
 EventEmitter will be adjusted at that time.
+- Renamed the Emitter interface and implementations to be less ambiguous with amphp's Emitter 
+concept with which there are no real similarities.
 - Updated dependency versions
 
 ## v2.0.0-rc1 - 2019-02-16

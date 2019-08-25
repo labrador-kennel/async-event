@@ -10,3 +10,4 @@ Vagrantfile
 /puphpet
 docs/_site/
 docs/.sass-cache
+scratch.php

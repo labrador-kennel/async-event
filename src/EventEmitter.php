@@ -69,12 +69,11 @@ interface EventEmitter {
      * the correct PromiseCombinator for your use case).
      *
      * Generally speaking you should not rely on values resolved from the returned Promise; they will be dependent on
-     * the exact PromiseCombinator used. However, the resolved value will almost always be an array of values resolved
-     * from listener callbacks OR an exception.
+     * the exact PromiseCombinator used.
      *
      * @param Event $event
      * @param PromiseCombinator|null $promiseCombinator
-     * @return Promise
+     * @return Promise<mixed>
      */
     public function emit(Event $event, PromiseCombinator $promiseCombinator = null) : Promise;
 
