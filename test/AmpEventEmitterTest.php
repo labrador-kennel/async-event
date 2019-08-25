@@ -8,27 +8,27 @@ use Amp\Failure;
 use Amp\Loop;
 use Amp\PHPUnit\AsyncTestCase;
 use Amp\Success;
-use Cspray\Labrador\AsyncEvent\AmpEmitter;
+use Cspray\Labrador\AsyncEvent\AmpEventEmitter;
 use Cspray\Labrador\AsyncEvent\Event;
 use Cspray\Labrador\AsyncEvent\PromiseCombinator;
 use Cspray\Labrador\AsyncEvent\StandardEvent;
 use Ds\Pair;
 
-class AmpEmitterTest extends AsyncTestCase {
+class AmpEventEmitterTest extends AsyncTestCase {
 
     private function standardEvent(string $name, $target = null, array $eventData = []) {
         $target = $target ?? new \stdClass();
         return new StandardEvent($name, $target, $eventData);
     }
 
-    public function testDefaultPromiseCombinatorIsAny() {
-        $subject = new AmpEmitter();
+    public function testDefaultPromiseCombinatorIsAll() {
+        $subject = new AmpEventEmitter();
 
-        $this->assertEquals(PromiseCombinator::Any(), $subject->getDefaultPromiseCombinator());
+        $this->assertEquals(PromiseCombinator::All(), $subject->getDefaultPromiseCombinator());
     }
 
     public function testSettingDefaultPromiseCombinator() {
-        $subject = new AmpEmitter();
+        $subject = new AmpEventEmitter();
 
         $subject->setDefaultPromiseCombinator(PromiseCombinator::Some());
 
@@ -36,7 +36,7 @@ class AmpEmitterTest extends AsyncTestCase {
     }
 
     public function testRegisteringEventListenerIncrementsListenerCount() {
-        $subject = new AmpEmitter();
+        $subject = new AmpEventEmitter();
         $subject->on('something', function() {
         });
 
@@ -49,7 +49,7 @@ class AmpEmitterTest extends AsyncTestCase {
     }
 
     public function testRemovingEventListenerDecrementsListenerCount() {
-        $subject = new AmpEmitter();
+        $subject = new AmpEventEmitter();
         $one = $subject->on('something', function() {
         });
         $two = $subject->on('something', function() {
@@ -67,34 +67,42 @@ class AmpEmitterTest extends AsyncTestCase {
     }
 
     public function testRegisteringEventListenerReturnsCorrectIdFormat() {
-        $subject = new AmpEmitter();
+        $subject = new AmpEventEmitter();
         $id = $subject->on('something', function() {
         });
 
-        $this->assertStringMatchesFormat('something:%x', $id);
+        $this->assertSame('something', $id->getEventName());
+        $this->assertStringMatchesFormat('%x', $id->getListenerId());
     }
 
     public function testRegisteringEventListenerIsReturnedInListeners() {
-        $subject = new AmpEmitter();
+        $subject = new AmpEventEmitter();
         $callbackOne = function() {
         };
         $callbackTwo = function() {
         };
 
-        $idOne = explode(':', $subject->on('something', $callbackOne))[1];
-        $idTwo = explode(':', $subject->on('something', $callbackTwo))[1];
-        $expected = [$idOne => new Pair($callbackOne, []), $idTwo => new Pair($callbackTwo, [])];
-        $this->assertEquals($expected, iterator_to_array($subject->listeners('something')));
+        $idOne = $subject->on('something', $callbackOne);
+        $idTwo = $subject->on('something', $callbackTwo);
+        $expected = [];
+        $expected[] = [$idOne, new Pair($callbackOne, [])];
+        $expected[] = [$idTwo, new Pair($callbackTwo, [])];
+
+        $actual = [];
+        foreach ($subject->listeners('something') as $listenerId => $listenerAndData) {
+            $actual[] = [$listenerId, $listenerAndData];
+        }
+        $this->assertEquals($expected, $actual);
     }
 
     public function testListenerCountWithNoRegisteredListeners() {
-        $subject = new AmpEmitter();
+        $subject = new AmpEventEmitter();
 
         $this->assertSame(0, $subject->listenerCount('something'));
     }
 
     public function testListenersWithNoRegisteredListeners() {
-        $subject = new AmpEmitter();
+        $subject = new AmpEventEmitter();
 
         $this->assertSame([], iterator_to_array($subject->listeners('something')));
     }
@@ -102,7 +110,7 @@ class AmpEmitterTest extends AsyncTestCase {
     public function testEmittingEvent() {
         $data = new \stdClass();
         $data->data = [];
-        $subject = new AmpEmitter();
+        $subject = new AmpEventEmitter();
         $subject->on('foo', function() use($data) {
             $data->data[] = 'foo';
         });
@@ -115,7 +123,7 @@ class AmpEmitterTest extends AsyncTestCase {
     public function testEmittingEventAsynchronously() {
         $data = new \stdClass();
         $data->data = [];
-        $subject = new AmpEmitter();
+        $subject = new AmpEventEmitter();
         $subject->on('foo', function() use($data) {
             $data->data[] = 1;
             yield new Delayed(0);
@@ -140,7 +148,7 @@ class AmpEmitterTest extends AsyncTestCase {
     public function testEmitPromiseResolves() {
         $data = new \stdClass();
         $data->data = [];
-        $subject = new AmpEmitter();
+        $subject = new AmpEventEmitter();
         $subject->on('foo', function() use($data) {
             $data->data[] = 1;
         });
@@ -157,7 +165,7 @@ class AmpEmitterTest extends AsyncTestCase {
     public function testListenerReturnsPromise() {
         $data = new \stdClass();
         $data->data = [];
-        $subject = new AmpEmitter();
+        $subject = new AmpEventEmitter();
         $subject->on('foobar', function() use($data) {
             $deferred = new Deferred();
 
@@ -181,23 +189,20 @@ class AmpEmitterTest extends AsyncTestCase {
 
     public function testListenerThrowsException() {
         $exception = new \Exception('Listener thrown exception');
-        $subject = new AmpEmitter();
+        $subject = new AmpEventEmitter();
         $subject->on('foobar', function() use($exception) {
             throw $exception;
         });
 
-        $promise = $subject->emit($this->standardEvent('foobar'));
-        $promise->onResolve(function(?\Throwable $error, ?array $result = null) use($exception) {
-            $this->assertSame($result[0][0]->getMessage(), $exception->getMessage());
-        });
-
-        yield new Delayed(0);
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Listener thrown exception');
+        yield $subject->emit($this->standardEvent('foobar'));
     }
 
     public function testListenerThrowsExceptionDoesNotStopOtherListeners() {
         $data = new \stdClass();
         $data->data = [];
-        $subject = new AmpEmitter();
+        $subject = new AmpEventEmitter();
         $subject->on('foobar', function() use($data) {
             $data->data[] = 'before';
         });
@@ -218,7 +223,7 @@ class AmpEmitterTest extends AsyncTestCase {
     }
 
     public function testListenerReturnsResolvedValues() {
-        $subject = new AmpEmitter();
+        $subject = new AmpEventEmitter();
         $subject->on('something', function() {
             return 1;
         });
@@ -235,16 +240,12 @@ class AmpEmitterTest extends AsyncTestCase {
             return 3;
         });
 
-        $promise = $subject->emit($this->standardEvent('something'));
-        $promise->onResolve(function($error, $result) {
-            $this->assertSame([1,2,3], $result[1]);
-        });
-
-        yield new Delayed(0);
+        $result = yield $subject->emit($this->standardEvent('something'));
+        $this->assertSame([1,2,3], $result);
     }
 
     public function testListenerArgumentsCorrect() {
-        $subject = new AmpEmitter();
+        $subject = new AmpEventEmitter();
         $data = new \stdClass();
         $data->data = [];
         $listenerId = $subject->on('something', function($event, $listenerData) use($data) {
@@ -255,11 +256,11 @@ class AmpEmitterTest extends AsyncTestCase {
         yield $subject->emit($this->standardEvent('something'));
 
         $this->assertInstanceOf(Event::class, $data->data[0]);
-        $this->assertSame(['id' => $listenerId], $data->data[1]);
+        $this->assertSame(['__labrador_kennel_id' => $listenerId], $data->data[1]);
     }
 
     public function testEventArgumentHasCorrectInformation() {
-        $subject = new AmpEmitter();
+        $subject = new AmpEventEmitter();
         $target = new \stdClass();
         $subject->on('something', function(Event $event) use($target) {
             $this->assertSame('something', $event->name());
@@ -267,11 +268,11 @@ class AmpEmitterTest extends AsyncTestCase {
             $this->assertSame([1,2,3], $event->data());
         });
 
-        yield $subject->emit($this->standardEvent('something'));
+        yield $subject->emit($this->standardEvent('something', $target, [1, 2, 3]));
     }
 
     public function testEventListenerDataHasCorrectInformation() {
-        $subject = new AmpEmitter();
+        $subject = new AmpEventEmitter();
         $data = new \stdClass();
         $data->data = [];
         $id = $subject->on('something', function($event, $listenerData) use($data) {
@@ -280,16 +281,18 @@ class AmpEmitterTest extends AsyncTestCase {
 
         yield $subject->emit($this->standardEvent('something'));
 
-        $this->assertSame([1,2,3,'id' => $id], $data->data);
+        $this->assertSame([1,2,3, '__labrador_kennel_id' => $id], $data->data);
     }
 
     public function testRunningListenerOnce() {
         $data = new \stdClass();
         $data->data = [];
-        $subject = new AmpEmitter();
+        $subject = new AmpEventEmitter();
         $subject->once('something', function() use($data) {
             $data->data[] = 1;
         });
+
+        $subject->setDefaultPromiseCombinator(PromiseCombinator::All());
 
         yield $subject->emit($this->standardEvent('something'));
         yield $subject->emit($this->standardEvent('something'));
@@ -299,7 +302,7 @@ class AmpEmitterTest extends AsyncTestCase {
     public function testEmittingEventOnceAsynchronously() {
         $data = new \stdClass();
         $data->data = [];
-        $subject = new AmpEmitter();
+        $subject = new AmpEventEmitter();
         $subject->once('foo', function() use($data) {
             $data->data[] = 1;
             yield new Delayed(0);
@@ -324,7 +327,7 @@ class AmpEmitterTest extends AsyncTestCase {
     public function testEmittingRespectsPassedPromiseCombinator() {
         $data = new \stdClass();
         $data->data = [];
-        $subject = new AmpEmitter();
+        $subject = new AmpEventEmitter();
         $subject->on('foo', function() use($data) {
             $data->data[] = 0;
             return new Success();
@@ -343,7 +346,7 @@ class AmpEmitterTest extends AsyncTestCase {
     public function testEmittingRespectsDefaultPromiseCombinatorIfNoneProvided() {
         $data = new \stdClass();
         $data->data = [];
-        $subject = new AmpEmitter();
+        $subject = new AmpEventEmitter();
         $subject->on('foo', function() use($data) {
             $data->data[] = 0;
             return new Success();
