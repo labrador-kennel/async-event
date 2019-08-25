@@ -2,6 +2,12 @@
 
 namespace Cspray\Labrador\AsyncEvent;
 
+/**
+ * An Event implementation that is used by the StandardEventFactory as a fallback Event in the case where a custom
+ * event factory has not been registered for the given event name.
+ *
+ * @package Cspray\Labrador\AsyncEvent
+ */
 class StandardEvent implements Event {
 
     private $name;
@@ -9,7 +15,7 @@ class StandardEvent implements Event {
     private $data;
     private $createdAt;
 
-    public function __construct(string $name, $target, array $data = []) {
+    public function __construct(string $name, object $target, array $data = []) {
         $this->name = $name;
         $this->target = $target;
         $this->data = $data;
@@ -20,7 +26,7 @@ class StandardEvent implements Event {
         return $this->name;
     }
 
-    public function target() {
+    public function target() : object {
         return $this->target;
     }
 
