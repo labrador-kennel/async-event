@@ -49,5 +49,4 @@ interface Event {
      * @return DateTimeImmutable
      */
     public function createdAt() : DateTimeImmutable;
-
 }

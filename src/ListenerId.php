@@ -24,5 +24,4 @@ interface ListenerId {
      * @return string
      */
     public function getListenerId() : string;
-
 }

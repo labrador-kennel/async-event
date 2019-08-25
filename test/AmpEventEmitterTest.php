@@ -242,7 +242,6 @@ class AmpEventEmitterTest extends AsyncTestCase {
 
         $result = yield $subject->emit($this->standardEvent('something'));
         $this->assertSame([1,2,3], $result);
-
     }
 
     public function testListenerArgumentsCorrect() {
