@@ -5,10 +5,6 @@ namespace Cspray\Labrador\AsyncEvent;
 use Cspray\Labrador\AsyncEvent;
 
 use Amp\Promise;
-use Ds\Map;
-use Ds\Pair;
-
-use Exception as PhpException;
 
 use function Amp\call;
 
@@ -24,24 +20,34 @@ class AmpEventEmitter implements AsyncEvent\EventEmitter {
     private $defaultCombinator;
 
     public function __construct() {
-        $this->listeners = new Map();
+        $this->listeners = [];
     }
 
-    public function on(string $event, callable $listener, array $listenerData = []) : ListenerId {
-        $listenerId = $this->createListenerId($event);
+    public function on(string $event, callable $listener, array $listenerData = []) : string {
+        if (!isset($this->listeners[$event])) {
+            $this->listeners[$event] = [];
+        }
+        $listenerId = bin2hex(random_bytes(8));
+        $this->listeners[$event][$listenerId] = [$listener, $listenerData];
 
-        $this->listeners->put($listenerId, new Pair($listener, $listenerData));
-
-        return $listenerId;
+        return base64_encode($event . ':' . $listenerId);
     }
 
-    public function off(ListenerId $listenerId) : void {
-        if ($this->listeners->hasKey($listenerId)) {
-            $this->listeners->remove($listenerId);
+    public function off(string $listenerId) : void {
+        $decodedListenerId = base64_decode($listenerId);
+        // if the ':' is in the 0 position it is still invalid as an event name cannot be blank so this is intentional
+        if (!$decodedListenerId || !strpos($decodedListenerId, ':')) {
+            return;
+        }
+
+        list($event, $listenerId) = explode(':', $decodedListenerId);
+
+        if (isset($this->listeners[$event]) && isset($this->listeners[$event][$listenerId])) {
+            unset($this->listeners[$event][$listenerId]);
         }
     }
 
-    public function once(string $event, callable $listener, array $listenerData = []) : ListenerId {
+    public function once(string $event, callable $listener, array $listenerData = []) : string {
         $callback = function($event, $listenerData) use($listener) {
             $listenerId = $listenerData['__labrador_kennel_id'];
             $this->off($listenerId);
@@ -52,12 +58,12 @@ class AmpEventEmitter implements AsyncEvent\EventEmitter {
     }
 
     public function emit(Event $event, PromiseCombinator $promiseCombinator = null) : Promise {
+        $listeners = $this->listeners[$event->name()] ?? [];
         $promises = [];
-        $this->listeners($event->name())->map(function($listenerId, $listenerPair) use($event, &$promises) {
-            $listenerData = array_merge($listenerPair->value, ['__labrador_kennel_id' => $listenerId]);
-            $promises[] = call($listenerPair->key, $event, $listenerData);
-        });
-
+        foreach ($listeners as $listenerId => list($callable, $listenerData)) {
+            $listenerData['__labrador_kennel_id'] = base64_encode($event->name() . ':' . $listenerId);
+            $promises[] = call($callable, $event, $listenerData);
+        }
         $promiseCombinator = $promiseCombinator ?? $this->getDefaultPromiseCombinator();
         return $promiseCombinator->combine(...$promises);
     }
@@ -66,10 +72,14 @@ class AmpEventEmitter implements AsyncEvent\EventEmitter {
         return count($this->listeners($event));
     }
 
-    public function listeners(string $event) : Map {
-        return $this->listeners->filter(function(ListenerId $listenerId) use($event) {
-             return $listenerId->getEventName() === $event;
-        });
+    public function listeners(string $event) : array {
+        $eventListeners = $this->listeners[$event] ?? [];
+        $cleanListeners = [];
+        foreach ($eventListeners as $listenerId => $listenerData) {
+            $cleanListeners[base64_encode($event . ':' . $listenerId)] = $listenerData;
+        }
+
+        return $cleanListeners;
     }
 
     public function getDefaultPromiseCombinator() : PromiseCombinator {
@@ -80,32 +90,4 @@ class AmpEventEmitter implements AsyncEvent\EventEmitter {
         $this->defaultCombinator = $promiseCombinator;
     }
 
-    private function createListenerId(string $event) : ListenerId {
-        return new class($event) implements ListenerId {
-
-            private $event;
-            private $id;
-
-            public function __construct(string $event) {
-                try {
-                    $id = bin2hex(random_bytes(8));
-                } catch (PhpException $exception) {
-                    error_log('Error creating listener ID. Falling back to non-CSRNG.');
-                    error_log($exception->getMessage());
-                    $id = uniqid('labrador_async_event');
-                } finally {
-                    $this->event = $event;
-                    $this->id = $id;
-                }
-            }
-
-            public function getEventName() : string {
-                return $this->event;
-            }
-
-            public function getListenerId() : string {
-                return $this->id;
-            }
-        };
-    }
 }
