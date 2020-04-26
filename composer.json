@@ -13,11 +13,9 @@
   ],
   "require": {
     "php": "~7.2",
-    "ext-ds": "*",
     "amphp/amp": "~2.0",
     "cspray/labrador-exceptions": "~1.0",
-    "cspray/yape": "^1.1",
-    "php-ds/php-ds": "^1.2"
+    "cspray/yape": "^1.1"
   },
   "require-dev": {
     "amphp/phpunit-util": "~1.1",
