@@ -5,10 +5,7 @@ namespace Cspray\Labrador\AsyncEvent;
 use Amp\Promise;
 
 /**
- * Represents an object that allows listeners to respond to emitted events using the full async power of amp.
- *
- * This interface is not to be confused with the concept of Amp's Emitter implementation. While similar this API is
- * intended to satisfy different requirements with a more traditional feel for emitting events.
+ * Represents an object that allows listeners to respond to emitted events asynchronously.
  *
  * @package Cspray\Labrador\AsyncEvent
  */
@@ -21,7 +18,7 @@ interface EventEmitter {
      * Each $listener is invoked within the context of a running event loop. The specific signature for an event
      * $listener looks like:
      *
-     * function(Event, ...$listenerData) : Promise<void>|Generator|void {}
+     * function(Event $event, array $listenerData) : Promise<void>|Generator|void {}
      *
      * The string returned is a unique listener ID that can be used to turn off an event listener with off().
      *
@@ -46,12 +43,12 @@ interface EventEmitter {
      *
      * The specific signature for an event $listener looks like:
      *
-     * function(Event, ...$listenerData) : Promise<void>|Generator|void {}
+     * function(Event $event, array $listenerData) : Promise<void>|Generator|void {}
      *
      * Each $listener is invoked within the context of a running event loop.
      *
      * The returned string is an id that can identify this listener to turn off. Please note that unlike listeners
-     * attached with on() there's a limited window for removal of a once() listener explicitly.
+     * attached with on() there's a limited window for explicit removal of a once() listener.
      *
      * @param string $event
      * @param callable $listener

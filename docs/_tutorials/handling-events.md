@@ -116,3 +116,12 @@ called it
 called it
 called it
 ```
+
+### Embracing Asynchronicity
+
+A key component of this library is that event listeners are handled asynchronously. A prime example of this is that in 
+the example above we yielded the `Promise` returned from `EventEmitter::emit()`. With the default `PromiseCombinator` 
+this causes the calling method to only continue executing after all event listeners have resolved. If we didn't yield 
+the returned Promise the calling method would continue executing before all event listeners have completely resolved. 
+Understanding the differences with how to deal with the returned Promise and whether to yield it or "fire and forget" is 
+a key aspect of using this library to its full advantage.
