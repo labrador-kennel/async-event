@@ -267,9 +267,9 @@ class AmpEventEmitterTest extends AsyncTestCase {
         $subject = new AmpEventEmitter();
         $target = new \stdClass();
         $subject->on('something', function(Event $event) use($target) {
-            $this->assertSame('something', $event->name());
-            $this->assertSame($target, $event->target());
-            $this->assertSame([1,2,3], $event->data());
+            $this->assertSame('something', $event->getName());
+            $this->assertSame($target, $event->getTarget());
+            $this->assertSame([1,2,3], $event->getData());
         });
 
         yield $subject->emit($this->standardEvent('something', $target, [1, 2, 3]));

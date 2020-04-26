@@ -13,7 +13,7 @@ use Cspray\Labrador\Exception\InvalidTypeException;
  * @package Cspray\Labrador\AsyncEvent
  * @license See LICENSE in source root
  */
-class StandardEventFactory implements EventFactory {
+final class StandardEventFactory implements EventFactory {
 
     private $eventFactories;
 
@@ -46,7 +46,7 @@ class StandardEventFactory implements EventFactory {
             throw new InvalidTypeException(sprintf($msg, Event::class, $eventName, gettype($event)));
         }
 
-        if ($event->name() !== $eventName) {
+        if ($event->getName() !== $eventName) {
             $msg = 'Factory functions MUST return an instance of %s with the same name as "%s"';
             throw new InvalidTypeException(sprintf($msg, Event::class, $eventName));
         }

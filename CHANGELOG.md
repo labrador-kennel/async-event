@@ -14,6 +14,9 @@ data structures provided by ext-ds are no longer available.
 - Updates the `EventEmitter::on()` and `EventEmitter::off()` to return `string` listener IDs. The 
 exact format of these ids SHOULD NOT be relied upon and may change from implementation to implementation.
 - Updates the `EventEmitter::off()` method to expect a `string` as its sole parameter.
+- Renames the `Event` methods to conform to prefix getter methods with `get` as expected amongst Labrador 
+codebases.
+- Makes the AmpEventEmitter class and StandardEventFactory class final.
 
 ## v2.0.0-rc2 - 2019-08-25
 

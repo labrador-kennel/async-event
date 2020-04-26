@@ -2,10 +2,7 @@
 
 namespace Cspray\Labrador\AsyncEvent;
 
-use Cspray\Labrador\AsyncEvent;
-
 use Amp\Promise;
-
 use function Amp\call;
 
 /**
@@ -14,7 +11,7 @@ use function Amp\call;
  * @package Cspray\Labrador\AsyncEvent
  * @license See LICENSE in source root
  */
-class AmpEventEmitter implements AsyncEvent\EventEmitter {
+final class AmpEventEmitter implements EventEmitter {
 
     private $listeners;
     private $defaultCombinator;
@@ -58,10 +55,10 @@ class AmpEventEmitter implements AsyncEvent\EventEmitter {
     }
 
     public function emit(Event $event, PromiseCombinator $promiseCombinator = null) : Promise {
-        $listeners = $this->listeners[$event->name()] ?? [];
+        $listeners = $this->listeners[$event->getName()] ?? [];
         $promises = [];
         foreach ($listeners as $listenerId => list($callable, $listenerData)) {
-            $listenerData['__labrador_kennel_id'] = base64_encode($event->name() . ':' . $listenerId);
+            $listenerData['__labrador_kennel_id'] = base64_encode($event->getName() . ':' . $listenerId);
             $promises[] = call($callable, $event, $listenerData);
         }
         $promiseCombinator = $promiseCombinator ?? $this->getDefaultPromiseCombinator();

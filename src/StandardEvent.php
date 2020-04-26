@@ -22,19 +22,19 @@ class StandardEvent implements Event {
         $this->createdAt = new \DateTimeImmutable();
     }
 
-    public function name() : string {
+    public function getName() : string {
         return $this->name;
     }
 
-    public function target() : object {
+    public function getTarget() : object {
         return $this->target;
     }
 
-    public function data() : array {
+    public function getData() : array {
         return $this->data;
     }
 
-    public function createdAt() : \DateTimeImmutable {
+    public function getCreatedAt() : \DateTimeImmutable {
         return $this->createdAt;
     }
 }

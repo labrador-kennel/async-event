@@ -62,8 +62,8 @@ class StandardEventFactoryTest extends UnitTestCase {
         $event = $factory->create('foo.bar', $target = new \stdClass());
 
         $this->assertInstanceOf(Event::class, $event);
-        $this->assertSame('foo.bar', $event->name());
-        $this->assertSame($target, $event->target());
-        $this->assertSame([], $event->data());
+        $this->assertSame('foo.bar', $event->getName());
+        $this->assertSame($target, $event->getTarget());
+        $this->assertSame([], $event->getData());
     }
 }
