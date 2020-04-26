@@ -45,12 +45,11 @@ final class PromiseCombinator implements Enum {
     }
 
     // It is imperative that if you add a new value post code generation you add the method name here!
-    static protected function getAllowedValues() : array {
+    protected static function getAllowedValues() : array {
         return ['All', 'Any', 'First', 'Some', ];
     }
 
     public function combine(Promise ...$promises) : Promise {
         return ($this->combinator)(...$promises);
     }
-
 }
