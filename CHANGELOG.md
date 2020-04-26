@@ -1,6 +1,8 @@
 # Changelog
 
-## v2.0.0-rc2 - 2020-04-26
+## v2.0.0 - 2020-04-26
+
+**This has many breaking changes when coming from previous versions. Please review CHANGELOG closely!**
 
 #### Removed
 
