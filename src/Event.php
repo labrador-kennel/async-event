@@ -2,7 +2,7 @@
 
 namespace Cspray\Labrador\AsyncEvent;
 
-use DateTimeImmutable;
+use DateTimeInterface;
 
 /**
  * Implementations that represent a semantic event triggered by Labrador or a Labrador powered Application.
@@ -16,7 +16,7 @@ interface Event {
      *
      * @return string
      */
-    public function name() : string;
+    public function getName() : string;
 
     /**
      * An object that represents the target of the event.
@@ -28,7 +28,7 @@ interface Event {
      *
      * @return object
      */
-    public function target() : object;
+    public function getTarget() : object;
 
     /**
      * An arbitrary set of data associated to this Event.
@@ -41,12 +41,12 @@ interface Event {
      *
      * @return array
      */
-    public function data() : array;
+    public function getData() : array;
 
     /**
      * The time that the Event was triggered.
      *
-     * @return DateTimeImmutable
+     * @return DateTimeInterface
      */
-    public function createdAt() : DateTimeImmutable;
+    public function getCreatedAt() : DateTimeInterface;
 }

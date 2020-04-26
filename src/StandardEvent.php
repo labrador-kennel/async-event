@@ -2,6 +2,9 @@
 
 namespace Cspray\Labrador\AsyncEvent;
 
+use DateTimeInterface;
+use DateTimeImmutable;
+
 /**
  * An Event implementation that is used by the StandardEventFactory as a fallback Event in the case where a custom
  * event factory has not been registered for the given event name.
@@ -19,22 +22,22 @@ class StandardEvent implements Event {
         $this->name = $name;
         $this->target = $target;
         $this->data = $data;
-        $this->createdAt = new \DateTimeImmutable();
+        $this->createdAt = new DateTimeImmutable();
     }
 
-    public function name() : string {
+    public function getName() : string {
         return $this->name;
     }
 
-    public function target() : object {
+    public function getTarget() : object {
         return $this->target;
     }
 
-    public function data() : array {
+    public function getData() : array {
         return $this->data;
     }
 
-    public function createdAt() : \DateTimeImmutable {
+    public function getCreatedAt() : DateTimeInterface {
         return $this->createdAt;
     }
 }

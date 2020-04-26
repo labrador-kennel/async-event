@@ -10,7 +10,7 @@ class StandardEventTest extends TestCase {
     public function testCreatesDateTimeOnConstruct() {
         $actual = new \DateTimeImmutable();
         $subject = new StandardEvent('labrador.test', new \stdClass());
-        $createdAt = $subject->createdAt();
+        $createdAt = $subject->getCreatedAt();
         $diff = $actual->diff($createdAt);
         $this->assertEmpty($diff->s);
         $this->assertNotEmpty($diff->f);
