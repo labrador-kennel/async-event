@@ -89,5 +89,4 @@ class AmpEventEmitter implements AsyncEvent\EventEmitter {
     public function setDefaultPromiseCombinator(PromiseCombinator $promiseCombinator) : void {
         $this->defaultCombinator = $promiseCombinator;
     }
-
 }

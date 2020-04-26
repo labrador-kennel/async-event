@@ -3,7 +3,6 @@
 namespace Cspray\Labrador\AsyncEvent;
 
 use Cspray\Labrador\Exception\InvalidTypeException;
-use Ds\Map;
 
 /**
  * An EventFactory implementation that will fallback to constructing a StandardEvent in the case where an Event is
