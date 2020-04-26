@@ -12,7 +12,6 @@ use Cspray\Labrador\AsyncEvent\AmpEventEmitter;
 use Cspray\Labrador\AsyncEvent\Event;
 use Cspray\Labrador\AsyncEvent\PromiseCombinator;
 use Cspray\Labrador\AsyncEvent\StandardEvent;
-use Ds\Pair;
 
 class AmpEventEmitterTest extends AsyncTestCase {
 
@@ -71,8 +70,13 @@ class AmpEventEmitterTest extends AsyncTestCase {
         $id = $subject->on('something', function() {
         });
 
-        $this->assertSame('something', $id->getEventName());
-        $this->assertStringMatchesFormat('%x', $id->getListenerId());
+        $decodedId = base64_decode($id);
+        $this->assertNotFalse($decodedId);
+        $this->assertStringContainsString(':', $decodedId);
+
+        list($event, $id) = explode(':', $decodedId);
+        $this->assertSame('something', $event);
+        $this->assertStringMatchesFormat('%x', $id);
     }
 
     public function testRegisteringEventListenerIsReturnedInListeners() {
@@ -85,8 +89,8 @@ class AmpEventEmitterTest extends AsyncTestCase {
         $idOne = $subject->on('something', $callbackOne);
         $idTwo = $subject->on('something', $callbackTwo);
         $expected = [];
-        $expected[] = [$idOne, new Pair($callbackOne, [])];
-        $expected[] = [$idTwo, new Pair($callbackTwo, [])];
+        $expected[] = [$idOne, [$callbackOne, []]];
+        $expected[] = [$idTwo, [$callbackTwo, []]];
 
         $actual = [];
         foreach ($subject->listeners('something') as $listenerId => $listenerAndData) {
@@ -104,7 +108,7 @@ class AmpEventEmitterTest extends AsyncTestCase {
     public function testListenersWithNoRegisteredListeners() {
         $subject = new AmpEventEmitter();
 
-        $this->assertSame([], iterator_to_array($subject->listeners('something')));
+        $this->assertSame([], $subject->listeners('something'));
     }
 
     public function testEmittingEvent() {

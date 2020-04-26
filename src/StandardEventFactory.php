@@ -3,7 +3,6 @@
 namespace Cspray\Labrador\AsyncEvent;
 
 use Cspray\Labrador\Exception\InvalidTypeException;
-use Ds\Map;
 
 /**
  * An EventFactory implementation that will fallback to constructing a StandardEvent in the case where an Event is
@@ -19,7 +18,7 @@ class StandardEventFactory implements EventFactory {
     private $eventFactories;
 
     public function __construct() {
-        $this->eventFactories = new Map();
+        $this->eventFactories = [];
     }
 
     /**
@@ -31,7 +30,7 @@ class StandardEventFactory implements EventFactory {
      * @throws InvalidTypeException
      */
     public function create(string $eventName, $target, array $eventData = [], ...$args) : Event {
-        if (!$this->eventFactories->hasKey($eventName)) {
+        if (!array_key_exists($eventName, $this->eventFactories)) {
             return new StandardEvent($eventName, $target, $eventData);
         }
 
@@ -68,6 +67,6 @@ class StandardEventFactory implements EventFactory {
      * @param callable $factoryFunction
      */
     public function register(string $eventName, callable $factoryFunction) {
-        $this->eventFactories->put($eventName, $factoryFunction);
+        $this->eventFactories[$eventName] = $factoryFunction;
     }
 }

@@ -1,5 +1,20 @@
 # Changelog
 
+## v2.0.0-rc3 - 2019-04-26
+
+#### Removed
+
+- Removes the requirement for the ext-ds extension. This was done to conform with the rest of 
+Labrador Kennel projects.
+- Removed the concept of the ListenerId as it was overly burdensome especially when some of the 
+data structures provided by ext-ds are no longer available.
+
+#### Changed
+
+- Updates the `EventEmitter::on()` and `EventEmitter::off()` to return `string` listener IDs. The 
+exact format of these ids SHOULD NOT be relied upon and may change from implementation to implementation.
+- Updates the `EventEmitter::off()` method to expect a `string` as its sole parameter.
+
 ## v2.0.0-rc2 - 2019-08-25
 
 #### Added
