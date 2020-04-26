@@ -18,11 +18,12 @@ require_once __DIR__ . '/vendor/autoload.php';
 
 use Cspray\Labrador\AsyncEvent\AmpEventEmitter;
 use Cspray\Labrador\AsyncEvent\Event;
-use Cspray\Labrador\AsyncEvent\StandardEvent;
+use Cspray\Labrador\AsyncEvent\StandardEventFactory;
 use Amp\Loop;
 
 Loop::run(function() {
     $emitter = new AmpEventEmitter();
+    $eventFactory = new StandardEventFactory();
 
     $emitter->on('foo', function(Event $event, array $listenerData) {
         echo 'Event name: ' . $event->getName(), PHP_EOL;
@@ -35,7 +36,7 @@ Loop::run(function() {
     // somewhere else in the codebase
     $target = new stdClass; // normally this would be some semantic object
     $target->data = 'target';
-    $event = new StandardEvent('foo', $target, ['event' => 'data']);
+    $event = $eventFactory->create('foo', $target, ['event' => 'data']);
     yield $emitter->emit($event);
 });
 ```
@@ -69,6 +70,49 @@ array (
 ```
 
 > Notice that this output includes a key in listener data that we did not provide. For more information about 
-> this special key please check out ["Deep Dive: Listener IDS"](./references/listener-ids).
+> this special key please check out ["Deep Dive: Listener IDs"](./references/listener-ids).
 
 ### Removing Listeners
+
+Sometimes it may be desirable to remove a listener that has been attached. This functionality is provided by the `off()` 
+comamnd. Calls to `on()` and `once()` return a unique string that is a listener ID; this listener ID is passed to 
+`off()` to remove a listener.
+
+```php
+<?php declare(strict_types = 1);
+
+require_once __DIR__ . '/vendor/autoload.php';
+
+use Cspray\Labrador\AsyncEvent\AmpEventEmitter;
+use Cspray\Labrador\AsyncEvent\StandardEventFactory;
+use Amp\Loop;
+
+Loop::run(function() {
+    $emitter = new AmpEventEmitter();
+    $eventFactory = new StandardEventFactory();
+    $listenerId = $emitter->on('foo', function() {
+        echo 'called it', PHP_EOL;
+    });
+
+    $triggerFooEvent = function() use($eventFactory, $emitter) {
+        $event = $eventFactory->create('foo', new stdClass);
+        return $emitter->emit($event);
+    };
+    
+    yield $triggerFooEvent();
+    yield $triggerFooEvent();
+    yield $triggerFooEvent();
+    
+    $emitter->off($listenerId);
+    
+    yield $triggerFooEvent();
+});
+```
+
+The expected output for this script would expect to see three lines of "called it" but not a fourth.
+
+```
+called it 
+called it
+called it
+```
