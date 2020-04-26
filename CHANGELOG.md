@@ -1,5 +1,11 @@
 # Changelog
 
+## v2.1.0 - 2020-04-26
+
+#### Changed
+
+- Updates the cspray/yape dependency to use a 2.0+ generated enum.
+
 ## v2.0.0 - 2020-04-26
 
 **This has many breaking changes when coming from previous versions. Please review CHANGELOG closely!**
