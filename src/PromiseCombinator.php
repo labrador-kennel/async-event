@@ -21,25 +21,25 @@ final class PromiseCombinator implements Enum {
     }
 
     public static function All() : self {
-        return self::getSingleton('All', function(Promise ...$promises) {
+        return self::getSingleton(__FUNCTION__, function(Promise ...$promises) {
             return Promise\all($promises);
         });
     }
 
     public static function Any() : self {
-        return self::getSingleton('Any', function(Promise ...$promises) {
+        return self::getSingleton(__FUNCTION__, function(Promise ...$promises) {
             return Promise\any($promises);
         });
     }
 
     public static function First() : self {
-        return self::getSingleton('First', function(Promise ...$promises) {
+        return self::getSingleton(__FUNCTION__, function(Promise ...$promises) {
             return Promise\first($promises);
         });
     }
 
     public static function Some() : self {
-        return self::getSingleton('Some', function(Promise ...$promises) {
+        return self::getSingleton(__FUNCTION__, function(Promise ...$promises) {
             return Promise\some($promises);
         });
     }
