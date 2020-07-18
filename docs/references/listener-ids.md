@@ -1,7 +1,6 @@
----
-title: "Deep Dive: Listener IDs"
----
-Listener IDs are unique strings returned by `EventEmitter::on()` and `EventEmitter::off()` that allows for turning the 
+# Deep Dive: Listener IDs
+
+Listener IDs are unique strings returned by `EventEmitter::on()` and `EventEmitter::once()` that allows for turning the 
 listener off and retrieving data about the listener through `EventEmitter::listeners()`. We'll go over critical 
 information to know about this important aspect of the library.
 

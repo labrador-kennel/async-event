@@ -1,6 +1,5 @@
----
-title: Understanding PromiseCombinators
----
+# Understanding PromiseCombinators
+
 Dealing with an aysnchronous event emitter means we have to deal with resolving Promises as a critical component of the 
 library. We expose the ability to tightly control how the Promises associated with your event listeners are handled 
 through the use of the `PromiseCombinator` enum.
