@@ -1,6 +1,5 @@
----
-title: Handling Events
----
+# Handling Events
+
 Triggering events with async-event is meant to be simple out-of-the-box but also to provide a tremendous amount of power 
 and flexibility with how you can trigger and respond to events. Here we'll go over the basics for the most common use 
 cases.

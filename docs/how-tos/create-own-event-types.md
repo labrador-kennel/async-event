@@ -1,6 +1,5 @@
----
-title: Creating Custom Event Types
----
+# Creating Custom Event Types
+
 Setup the `StandardEventFactory` to customize the creation process for specific Event types. Labrador async-event 
 recommends creating semantic types to describe your application and has easy ways to facilitate doing so baked into this 
 library.
