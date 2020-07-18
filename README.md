@@ -51,7 +51,7 @@ Loop::run(function() {
 ## Documentation
 
 Labrador packages have thorough documentation in-repo in the `docs/` directory. You can also check out the documentation 
-online at https://labrador-kennel.io/docs/async-event.
+online at [https://labrador-kennel.io/docs/async-event](https://labrador-kennel.io/docs/async-event).
 
 ## Governance
 
@@ -59,5 +59,4 @@ All Labrador packages adhere to the rules laid out in the [Labrador Governance r
 
 [amphp/amp]: https://amphp.org
 [Composer]: https://getcomposer.org
-[docs]: ./docs
 [Labrador Governance repo]: https://github.com/labrador-kennel/governance
