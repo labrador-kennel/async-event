@@ -30,7 +30,7 @@ jobs:
       - name: PHP 8 tests
         uses: php-actions/phpunit@v2
         with:
-          version: 9
+          version: 8
           php_version: 8
 
       - name: Run code sniffer
