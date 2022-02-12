@@ -1,5 +1,17 @@
 # Changelog
 
+## v3.0.0 - 2022-02-12
+
+#### Added
+
+#### Changed
+
+- 
+
+#### Removed
+
+
+
 ## v2.2.0 - 2020-05-02
 
 #### Changed

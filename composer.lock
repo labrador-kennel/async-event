@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4071940f8c19f8fb31ccf5a812ceb6fe",
+    "content-hash": "171a1b95451bebcf2b41bc721f1bf51b",
     "packages": [
         {
             "name": "amphp/amp",
@@ -93,6 +93,46 @@
                 }
             ],
             "time": "2022-01-16T16:46:53+00:00"
+        },
+        {
+            "name": "cspray/labrador-composite-future",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/labrador-kennel/composite-future.git",
+                "reference": "7076d6bf3c9febe8194644a26a5e60d552426495"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/labrador-kennel/composite-future/zipball/7076d6bf3c9febe8194644a26a5e60d552426495",
+                "reference": "7076d6bf3c9febe8194644a26a5e60d552426495",
+                "shasum": ""
+            },
+            "require": {
+                "amphp/amp": "3.0.0-beta.4"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Labrador\\CompositeFuture\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Charles Sprayberry",
+                    "email": "me@cspray.io"
+                }
+            ],
+            "description": "Compose Amp Futures and await them however you want with a type-safe CompositeFuture object.",
+            "support": {
+                "issues": "https://github.com/labrador-kennel/composite-future/issues",
+                "source": "https://github.com/labrador-kennel/composite-future/tree/1.0.0"
+            },
+            "time": "2022-02-12T17:35:41+00:00"
         },
         {
             "name": "cspray/labrador-exceptions",

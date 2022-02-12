@@ -2,10 +2,8 @@
 
 namespace Cspray\Labrador\AsyncEvent;
 
-use Amp\CompositeException;
-use Throwable;
+use Labrador\CompositeFuture\CompositeFuture;
 use function Amp\async;
-use function Amp\Future\awaitAll;
 
 /**
  * An EventEmitter implementation powered by Amp.
@@ -63,17 +61,14 @@ final class AmpEventEmitter implements EventEmitter {
     /**
      * @inheritDoc
      */
-    public function emit(Event $event) : void {
+    public function emit(Event $event) : CompositeFuture {
         $listeners = $this->listeners($event->getName());
         $futures = [];
         foreach ($listeners as $listenerId => list($callable, $listenerData)) {
             $listenerData['__labrador_kennel_id'] = $listenerId;
             $futures[$listenerId] = async($callable, $event, $listenerData);
         }
-        [$errors,] = awaitAll($futures);
-        if (!empty($errors)) {
-            throw new CompositeException($errors);
-        }
+        return new CompositeFuture($futures);
     }
 
     /**

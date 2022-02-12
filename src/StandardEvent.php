@@ -13,10 +13,10 @@ use DateTimeImmutable;
  */
 class StandardEvent implements Event {
 
-    private $name;
-    private $target;
-    private $data;
-    private $createdAt;
+    private string $name;
+    private object $target;
+    private array $data;
+    private DateTimeInterface $createdAt;
 
     public function __construct(string $name, object $target, array $data = []) {
         $this->name = $name;

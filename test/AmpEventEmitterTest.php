@@ -2,7 +2,6 @@
 
 namespace Cspray\Labrador\AsyncEvent\Test;
 
-use Amp\CompositeException;
 use Amp\PHPUnit\AsyncTestCase;
 use Cspray\Labrador\AsyncEvent\AmpEventEmitter;
 use Cspray\Labrador\AsyncEvent\Event;
@@ -102,7 +101,7 @@ class AmpEventEmitterTest extends AsyncTestCase {
             $data->data[] = 'foo';
         });
 
-        $subject->emit($this->standardEvent('foo'));
+        $subject->emit($this->standardEvent('foo'))->await();
 
         $this->assertSame(['foo'], $data->data);
     }
@@ -127,7 +126,7 @@ class AmpEventEmitterTest extends AsyncTestCase {
             $data->data[] = 6;
         });
 
-        $subject->emit($this->standardEvent('foo'));
+        $subject->emit($this->standardEvent('foo'))->await();
 
         $this->assertSame([1,2,3,4,5,6], $data->data);
     }
@@ -141,7 +140,7 @@ class AmpEventEmitterTest extends AsyncTestCase {
 
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('Listener thrown exception');
-        $subject->emit($this->standardEvent('foobar'));
+        $subject->emit($this->standardEvent('foobar'))->await();
     }
 
     public function testListenerThrowsExceptionDoesNotStopOtherListeners() {
@@ -163,19 +162,12 @@ class AmpEventEmitterTest extends AsyncTestCase {
             $data->data[] = 'after';
         });
 
-        $compositeException = null;
-        try {
-            $subject->emit($this->standardEvent('foobar'));
-        } catch (CompositeException $exception) {
-            $compositeException = $exception;
-        } finally {
-            $this->assertNotNull($compositeException);
-            $expected = [
-                $badId1 => $badException1,
-                $badId2 => $badException2
-            ];
-            $this->assertEquals($expected, $compositeException->getReasons());
-        }
+        [$errors,] = $subject->emit($this->standardEvent('foobar'))->awaitAll();
+        $expected = [
+            $badId1 => $badException1,
+            $badId2 => $badException2
+        ];
+        $this->assertEquals($expected, $errors);
         $this->assertSame(['before', 'after'], $data->data);
     }
 
@@ -188,7 +180,7 @@ class AmpEventEmitterTest extends AsyncTestCase {
             $data->data[] = $listenerData;
         });
 
-        $subject->emit($this->standardEvent('something'));
+        $subject->emit($this->standardEvent('something'))->await();
 
         $this->assertInstanceOf(Event::class, $data->data[0]);
         $this->assertSame(['__labrador_kennel_id' => $listenerId], $data->data[1]);
@@ -203,7 +195,7 @@ class AmpEventEmitterTest extends AsyncTestCase {
             $this->assertSame([1,2,3], $event->getData());
         });
 
-        $subject->emit($this->standardEvent('something', $target, [1, 2, 3]));
+        $subject->emit($this->standardEvent('something', $target, [1, 2, 3]))->await();
     }
 
     public function testEventListenerDataHasCorrectInformation() {
@@ -214,7 +206,7 @@ class AmpEventEmitterTest extends AsyncTestCase {
             $data->data = $listenerData;
         }, [1,2,3]);
 
-        $subject->emit($this->standardEvent('something'));
+        $subject->emit($this->standardEvent('something'))->await();
 
         $this->assertSame([1,2,3, '__labrador_kennel_id' => $id], $data->data);
     }
@@ -227,8 +219,8 @@ class AmpEventEmitterTest extends AsyncTestCase {
             $data->data[] = 1;
         });
 
-        $subject->emit($this->standardEvent('something'));
-        $subject->emit($this->standardEvent('something'));
+        $subject->emit($this->standardEvent('something'))->await();
+        $subject->emit($this->standardEvent('something'))->await();
         $this->assertSame([1], $data->data);
     }
 
@@ -252,7 +244,7 @@ class AmpEventEmitterTest extends AsyncTestCase {
             $data->data[] = 6;
         });
 
-        $subject->emit($this->standardEvent('foo'));
+        $subject->emit($this->standardEvent('foo'))->await();
 
         $this->assertSame([1,2,3,4,5,6], $data->data);
     }

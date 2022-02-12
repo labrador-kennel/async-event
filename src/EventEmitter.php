@@ -3,6 +3,7 @@
 namespace Cspray\Labrador\AsyncEvent;
 
 use Amp\CompositeException;
+use Labrador\CompositeFuture\CompositeFuture;
 
 /**
  * Represents an object that allows listeners to respond to emitted events asynchronously.
@@ -25,7 +26,6 @@ interface EventEmitter {
      * @param callable $listener function(Event $event, array $listenerData) : void
      * @param array $listenerData
      * @return string
-     * @throws CompositeException
      */
     public function on(string $event, callable $listener, array $listenerData = []) : string;
 
@@ -62,10 +62,9 @@ interface EventEmitter {
      * threw.
      *
      * @param Event $event
-     * @return void
-     * @throws CompositeException
+     * @return CompositeFuture
      */
-    public function emit(Event $event) : void;
+    public function emit(Event $event) : CompositeFuture;
 
     /**
      * Return the number of listeners registered for a specific event.
