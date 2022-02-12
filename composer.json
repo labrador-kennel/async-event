@@ -16,15 +16,14 @@
     "test": "vendor/bin/phpunit"
   },
   "require": {
-    "php": ">=7.2",
-    "amphp/amp": "~2.0",
-    "cspray/labrador-exceptions": "~1.2",
-    "cspray/yape": "^3.1"
+    "php": ">=8.1",
+    "amphp/amp": "~v3.0.0-beta.4",
+    "cspray/labrador-exceptions": "~1.2"
   },
   "require-dev": {
-    "amphp/phpunit-util": "~1.1",
+    "amphp/phpunit-util": "v3.0.0-beta.2",
     "cspray/labrador-coding-standard": "0.2.0",
-    "phpunit/phpunit": "~8"
+    "phpunit/phpunit": "~9"
   },
   "autoload": {
     "psr-4": {

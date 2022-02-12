@@ -2,8 +2,10 @@
 
 namespace Cspray\Labrador\AsyncEvent;
 
-use Amp\Promise;
-use function Amp\call;
+use Amp\CompositeException;
+use Throwable;
+use function Amp\async;
+use function Amp\Future\awaitAll;
 
 /**
  * An EventEmitter implementation powered by Amp.
@@ -13,12 +15,7 @@ use function Amp\call;
  */
 final class AmpEventEmitter implements EventEmitter {
 
-    private $listeners;
-    private $defaultCombinator;
-
-    public function __construct() {
-        $this->listeners = [];
-    }
+    private array $listeners = [];
 
     /**
      * @inheritDoc
@@ -57,7 +54,7 @@ final class AmpEventEmitter implements EventEmitter {
         $callback = function($event, $listenerData) use($listener) {
             $listenerId = $listenerData['__labrador_kennel_id'];
             $this->off($listenerId);
-            return call($listener, $event, $listenerData);
+            async($listener, $event, $listenerData)->await();
         };
         $callback = $callback->bindTo($this, $this);
         return $this->on($event, $callback, $listenerData);
@@ -66,15 +63,17 @@ final class AmpEventEmitter implements EventEmitter {
     /**
      * @inheritDoc
      */
-    public function emit(Event $event, PromiseCombinator $promiseCombinator = null) : Promise {
-        $listeners = $this->listeners[$event->getName()] ?? [];
-        $promises = [];
+    public function emit(Event $event) : void {
+        $listeners = $this->listeners($event->getName());
+        $futures = [];
         foreach ($listeners as $listenerId => list($callable, $listenerData)) {
             $listenerData['__labrador_kennel_id'] = $listenerId;
-            $promises[] = call($callable, $event, $listenerData);
+            $futures[$listenerId] = async($callable, $event, $listenerData);
         }
-        $promiseCombinator = $promiseCombinator ?? $this->getDefaultPromiseCombinator();
-        return $promiseCombinator->combine(...$promises);
+        [$errors,] = awaitAll($futures);
+        if (!empty($errors)) {
+            throw new CompositeException($errors);
+        }
     }
 
     /**
@@ -89,19 +88,5 @@ final class AmpEventEmitter implements EventEmitter {
      */
     public function listeners(string $event) : array {
         return $this->listeners[$event] ?? [];
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getDefaultPromiseCombinator() : PromiseCombinator {
-        return $this->defaultCombinator ?? PromiseCombinator::All();
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function setDefaultPromiseCombinator(PromiseCombinator $promiseCombinator) : void {
-        $this->defaultCombinator = $promiseCombinator;
     }
 }

@@ -43,7 +43,7 @@ Loop::run(function() {
     $target = new stdClass();   // normally this would be an object detailing what the event was triggered on
     $event = $eventFactory->create('my-event', $target);
 
-    yield $emitter->emit($event);
+    $emitter->emit($event);
 });
 ?>
 ```
