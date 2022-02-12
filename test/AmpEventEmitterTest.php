@@ -248,5 +248,4 @@ class AmpEventEmitterTest extends AsyncTestCase {
 
         $this->assertSame([1,2,3,4,5,6], $data->data);
     }
-
 }
