@@ -23,5 +23,5 @@ interface EventFactory {
      * @param array $eventConstructorArgs
      * @return Event
      */
-    public function create(string $eventName, $target, array $eventData = [], ...$eventConstructorArgs) : Event;
+    public function create(string $eventName, object $target, array $eventData = [], ...$eventConstructorArgs) : Event;
 }

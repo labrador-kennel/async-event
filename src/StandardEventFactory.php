@@ -15,7 +15,7 @@ use Cspray\Labrador\Exception\InvalidTypeException;
  */
 final class StandardEventFactory implements EventFactory {
 
-    private $eventFactories;
+    private array $eventFactories;
 
     public function __construct() {
         $this->eventFactories = [];
@@ -29,7 +29,7 @@ final class StandardEventFactory implements EventFactory {
      * @return Event
      * @throws InvalidTypeException
      */
-    public function create(string $eventName, $target, array $eventData = [], ...$args) : Event {
+    public function create(string $eventName, object $target, array $eventData = [], ...$args) : Event {
         if (!array_key_exists($eventName, $this->eventFactories)) {
             return new StandardEvent($eventName, $target, $eventData);
         }

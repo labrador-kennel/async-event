@@ -50,8 +50,7 @@ $eventFactory->register('foo', function(FooModel $fooModel) {
 
 Now whenever the `'foo'` event is emitted and the `StandardEventFactory` constructs an Event your factory callable will 
 be invoked instead of the normal `StandardEventFactory`. It is important to note that the factory callable should match 
-the method signature below. It is possible to make the target type parameter should be made more explicit if you know 
-what type of target to expect.
+the method signature below. It is possible to make the `$target` more explicit if you know what to expect.
 
 ```php
 <?php

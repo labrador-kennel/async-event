@@ -1,6 +1,6 @@
 # Handling Events
-
-Triggering events with async-event is meant to be simple out-of-the-box but also to provide a tremendous amount of power 
+ 
+Emitting events with async-event is meant to be simple out-of-the-box but also to provide a tremendous amount of power 
 and flexibility with how you can trigger and respond to events. Here we'll go over the basics for the most common use 
 cases.
 
@@ -18,9 +18,9 @@ require_once __DIR__ . '/vendor/autoload.php';
 use Cspray\Labrador\AsyncEvent\AmpEventEmitter;
 use Cspray\Labrador\AsyncEvent\Event;
 use Cspray\Labrador\AsyncEvent\StandardEventFactory;
-use Amp\Loop;
+use function Amp\async;
 
-Loop::run(function() {
+async(function() {
     $emitter = new AmpEventEmitter();
     $eventFactory = new StandardEventFactory();
 
@@ -36,8 +36,11 @@ Loop::run(function() {
     $target = new stdClass; // normally this would be some semantic object
     $target->data = 'target';
     $event = $eventFactory->create('foo', $target, ['event' => 'data']);
-    yield $emitter->emit($event);
-});
+    
+    // Notice that we're waiting for all listeners to respond. Check out https://github.com/labrador-kennel/composite-future
+    // for more ways to resolve listener Futures.
+    $emitter->emit($event)->await();
+})->await();
 ```
 
 There isn't anything particularly fancy about our event handler, it just outputs the data and information available to 
@@ -74,7 +77,7 @@ array (
 ### Removing Listeners
 
 Sometimes it may be desirable to remove a listener that has been attached. This functionality is provided by the `off()` 
-comamnd. Calls to `on()` and `once()` return a unique string that is a listener ID; this listener ID is passed to 
+command. Calls to `on()` and `once()` return a unique string that is a listener ID; this listener ID is passed to 
 `off()` to remove a listener.
 
 ```php
@@ -84,9 +87,9 @@ require_once __DIR__ . '/vendor/autoload.php';
 
 use Cspray\Labrador\AsyncEvent\AmpEventEmitter;
 use Cspray\Labrador\AsyncEvent\StandardEventFactory;
-use Amp\Loop;
+use function Amp\async;
 
-Loop::run(function() {
+async(function() {
     $emitter = new AmpEventEmitter();
     $eventFactory = new StandardEventFactory();
     $listenerId = $emitter->on('foo', function() {
@@ -98,13 +101,13 @@ Loop::run(function() {
         return $emitter->emit($event);
     };
     
-    yield $triggerFooEvent();
-    yield $triggerFooEvent();
-    yield $triggerFooEvent();
+    $triggerFooEvent()->await();
+    $triggerFooEvent()->await();
+    $triggerFooEvent()->await();
     
     $emitter->off($listenerId);
     
-    yield $triggerFooEvent();
+    $triggerFooEvent()->await();
 });
 ```
 
@@ -118,9 +121,8 @@ called it
 
 ### Embracing Asynchronicity
 
-A key component of this library is that event listeners are handled asynchronously. A prime example of this is that in 
-the example above we yielded the `Promise` returned from `EventEmitter::emit()`. With the default `PromiseCombinator` 
-this causes the calling method to only continue executing after all event listeners have resolved. If we didn't yield 
-the returned Promise the calling method would continue executing before all event listeners have completely resolved. 
-Understanding the differences with how to deal with the returned Promise and whether to yield it or "fire and forget" is 
-a key aspect of using this library to its full advantage.
+A key component of this library is that event listeners are handled asynchronously. Every listener has its own fiber
+created and is executed within that context. An artifact of this is that your application will need to determine how
+to properly resolve the generated Futures. The `EventEmitter::emit` method returns a `CompositeFuture` 
+that allows your app to determine how to handle resolving event listeners. This allows you to potentially "fire-and-forget" 
+events, wait for all listeners to process, or only wait for some listeners to process.
