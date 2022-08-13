@@ -16,15 +16,17 @@
     "test": "vendor/bin/phpunit"
   },
   "require": {
-    "php": ">=8.0",
+    "php": "^8.1",
     "amphp/amp": "~v3.0.0-beta.4",
-    "cspray/labrador-composite-future": "~1.0",
-    "cspray/labrador-exceptions": "~1.2"
+    "cspray/annotated-container": "^1.5",
+    "cspray/labrador-composite-future": "^1.1",
+    "cspray/labrador-exceptions": "^1.2"
   },
   "require-dev": {
-    "amphp/phpunit-util": "v3.0.0-beta.2",
+    "amphp/phpunit-util": "v3.0.0-beta.3",
     "cspray/labrador-coding-standard": "0.2.0",
-    "phpunit/phpunit": "~9"
+    "phpunit/phpunit": "^9.5",
+    "rdlowrey/auryn": "^1.4"
   },
   "autoload": {
     "psr-4": {

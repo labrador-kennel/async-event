@@ -4,6 +4,10 @@
     <include>
       <directory suffix=".php">./src</directory>
     </include>
+    <report>
+      <text outputFile="php://stdout" showOnlySummary="false" />
+      <html outputDirectory="build/code-coverage/html" />
+    </report>
   </coverage>
   <testsuites>
     <testsuite name="All Tests Suite">
@@ -11,11 +15,4 @@
       <directory suffix=".phpt">./test</directory>
     </testsuite>
   </testsuites>
-  <!--
-    <logging>
-        <log type="coverage-html" target="./build/coverage"
-             lowUpperBound="35" highLowerBound="70" showUncoveredFiles="true" />
-        <log type="coverage-xml" target="./build/logs/coverage"/>
-    </logging>
-    -->
 </phpunit>

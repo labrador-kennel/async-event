@@ -2,6 +2,7 @@
 
 namespace Cspray\Labrador\AsyncEvent;
 
+use Cspray\AnnotatedContainer\Attribute\Service;
 use Cspray\Labrador\Exception\InvalidTypeException;
 
 /**
@@ -13,6 +14,7 @@ use Cspray\Labrador\Exception\InvalidTypeException;
  * @package Cspray\Labrador\AsyncEvent
  * @license See LICENSE in source root
  */
+#[Service]
 final class StandardEventFactory implements EventFactory {
 
     private array $eventFactories;

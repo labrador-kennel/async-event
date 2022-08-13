@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Cspray\Labrador\AsyncEvent\Test;
+namespace Cspray\Labrador\AsyncEvent\Test\Unit;
 
 use Cspray\Labrador\AsyncEvent\StandardEvent;
 use PHPUnit\Framework\TestCase;

@@ -2,6 +2,7 @@
 
 namespace Cspray\Labrador\AsyncEvent;
 
+use DateTimeImmutable;
 use DateTimeInterface;
 
 /**
@@ -34,10 +35,7 @@ interface Event {
      * An arbitrary set of data associated to this Event.
      *
      * Perhaps the target alone is not sufficient data to pass about this event or there is meta data that you'd like
-     * to associate with the vent (e.g. what host triggered an event in a network-enabled emitter).
-     *
-     * It is important to remember that this is distinct and separate from the concept of $listenerData that is passed
-     * to on() and once() on listener registration.
+     * to associate with the event (e.g. what host triggered an event in a network-enabled emitter).
      *
      * @return array
      */
@@ -46,7 +44,7 @@ interface Event {
     /**
      * The time that the Event was triggered.
      *
-     * @return DateTimeInterface
+     * @return DateTimeImmutable
      */
-    public function getCreatedAt() : DateTimeInterface;
+    public function getCreatedAt() : DateTimeImmutable;
 }

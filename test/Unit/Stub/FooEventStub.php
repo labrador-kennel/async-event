@@ -6,7 +6,7 @@ declare(strict_types = 1);
  * @license See LICENSE file in project root
  */
 
-namespace Cspray\Labrador\AsyncEvent\Test\Stub;
+namespace Cspray\Labrador\AsyncEvent\Test\Unit\Stub;
 
 use Cspray\Labrador\AsyncEvent\StandardEvent;
 
