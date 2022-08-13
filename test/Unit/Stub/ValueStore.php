@@ -19,5 +19,4 @@ class ValueStore {
     public function getValues() : array {
         return $this->store;
     }
-
 }

@@ -18,5 +18,4 @@ class BarListener extends AbstractListener {
     public function handle(Event $event) : Future|CompositeFuture|null {
         return Future::complete('bar');
     }
-
 }

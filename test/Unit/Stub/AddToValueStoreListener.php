@@ -15,7 +15,8 @@ class AddToValueStoreListener implements Listener {
         private readonly ValueStore $store,
         private readonly string $event,
         private readonly int $value
-    ) {}
+    ) {
+    }
 
     public function setRegistration(ListenerRegistration $registration) : void {
     }

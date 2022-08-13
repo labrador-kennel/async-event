@@ -16,7 +16,8 @@ class StubEventListener implements Listener {
     public function __construct(
         private readonly string $expectedEventName,
         private readonly Future|CompositeFuture|null $returnValue
-    ) {}
+    ) {
+    }
 
     public function canHandle(string $eventName) : bool {
         return $this->expectedEventName === $eventName;

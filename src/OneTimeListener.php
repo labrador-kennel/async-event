@@ -9,7 +9,8 @@ final class OneTimeListener implements Listener {
 
     private ?ListenerRegistration $registration = null;
 
-    public function __construct(private readonly Listener $listener) {}
+    public function __construct(private readonly Listener $listener) {
+    }
 
     public function handle(Event $event) : Future|CompositeFuture|null {
         $handled = $this->listener->handle($event);

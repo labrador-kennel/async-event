@@ -12,7 +12,8 @@ class AutowiredListener implements ServiceAttribute {
         private readonly ListenerRemoval $listenerRemoval = ListenerRemoval::NeverRemove,
         private readonly array $profiles = [],
         private readonly ?string $name = null
-    ) {}
+    ) {
+    }
 
     public function getListenerRemoval() : ListenerRemoval {
         return $this->listenerRemoval;

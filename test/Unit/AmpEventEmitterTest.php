@@ -102,7 +102,9 @@ class AmpEventEmitterTest extends AsyncTestCase {
 
     public function testRegistrationAddedToListener() : void {
         $subject = new AmpEventEmitter();
-        $registration = $subject->register($listener = new StubEventListener('foo', Future::complete()));
+        $registration = $subject->register(
+            $listener = new StubEventListener('foo', Future::complete())
+        );
 
         $subject->emit($this->standardEvent('foo'));
 
@@ -147,7 +149,12 @@ class AmpEventEmitterTest extends AsyncTestCase {
         $subject = new AmpEventEmitter();
 
         $subject->register(new StubEventListener('something', Future::complete('foo')));
-        $subject->register(new StubEventListener('something', new CompositeFuture([Future::complete('baz'), Future::complete('qux')])));
+        $subject->register(
+            new StubEventListener(
+                'something',
+                new CompositeFuture([Future::complete('baz'), Future::complete('qux')])
+            )
+        );
         $subject->register(new StubEventListener('foo', Future::complete('bad')));
         $subject->register(new StubEventListener('something', null));
 
@@ -167,5 +174,4 @@ class AmpEventEmitterTest extends AsyncTestCase {
 
         $this->assertSame([1], $valueStore->getValues());
     }
-
 }

@@ -14,5 +14,4 @@ interface Listener {
     public function canHandle(string $eventName) : bool;
 
     public function handle(Event $event) : Future|CompositeFuture|null;
-
 }

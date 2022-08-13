@@ -5,5 +5,4 @@ namespace Cspray\Labrador\AsyncEvent;
 interface ListenerRegistration {
 
     public function remove() : void;
-
 }

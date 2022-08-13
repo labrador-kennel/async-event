@@ -11,7 +11,8 @@ abstract class AbstractListener implements Listener {
 
     public function __construct(
         private readonly string $handledEvent
-    ) {}
+    ) {
+    }
 
     final public function setRegistration(ListenerRegistration $registration) : void {
         $this->registration = $registration;
@@ -24,5 +25,4 @@ abstract class AbstractListener implements Listener {
     final public function canHandle(string $eventName) : bool {
         return $this->handledEvent === $eventName;
     }
-
 }
