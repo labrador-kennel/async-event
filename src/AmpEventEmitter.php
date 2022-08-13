@@ -2,6 +2,9 @@
 
 namespace Cspray\Labrador\AsyncEvent;
 
+use Amp\Future;
+use Cspray\AnnotatedContainer\Attribute\Service;
+use Cspray\Labrador\AsyncEvent\Internal\CallableListenerRegistration;
 use Labrador\CompositeFuture\CompositeFuture;
 use function Amp\async;
 
@@ -11,77 +14,66 @@ use function Amp\async;
  * @package Cspray\Labrador\AsyncEvent
  * @license See LICENSE in source root
  */
+#[Service]
 final class AmpEventEmitter implements EventEmitter {
 
+    /**
+     * @var array<string, Listener>
+     */
     private array $listeners = [];
 
-    /**
-     * @inheritDoc
-     */
-    public function on(string $event, callable $listener, array $listenerData = []) : string {
-        if (!isset($this->listeners[$event])) {
-            $this->listeners[$event] = [];
-        }
-        $listenerId = base64_encode($event . ':' . bin2hex(random_bytes(8)));
-        $this->listeners[$event][$listenerId] = [$listener, $listenerData];
-
-        return $listenerId;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function off(string $listenerId) : void {
-        $decodedListenerId = base64_decode($listenerId);
-        // if the ':' is in the 0 position it is still invalid as an event name cannot be blank so this is intentional
-        if (!$decodedListenerId || !strpos($decodedListenerId, ':')) {
-            return;
-        }
-
-        $event = explode(':', $decodedListenerId)[0];
-
-        if (isset($this->listeners[$event]) && isset($this->listeners[$event][$listenerId])) {
-            unset($this->listeners[$event][$listenerId]);
-        }
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function once(string $event, callable $listener, array $listenerData = []) : string {
-        $callback = function($event, $listenerData) use($listener) {
-            $listenerId = $listenerData['__labrador_kennel_id'];
-            $this->off($listenerId);
-            async($listener, $event, $listenerData)->await();
+    public function register(Listener $listener) : ListenerRegistration {
+        $listenerKey = random_bytes(16);
+        $remover = function() use($listenerKey) {
+            unset($this->listeners[$listenerKey]);
         };
-        $callback = $callback->bindTo($this, $this);
-        return $this->on($event, $callback, $listenerData);
+        $registration = new CallableListenerRegistration($remover);
+        $listener->setRegistration($registration);
+        $this->listeners[$listenerKey] = $listener;
+        return $registration;
     }
 
     /**
      * @inheritDoc
      */
     public function emit(Event $event) : CompositeFuture {
-        $listeners = $this->listeners($event->getName());
-        $futures = [];
-        foreach ($listeners as $listenerId => list($callable, $listenerData)) {
-            $listenerData['__labrador_kennel_id'] = $listenerId;
-            $futures[$listenerId] = async($callable, $event, $listenerData);
+        $futures = array_map(
+            function(Listener $listener) use($event) {
+                $futureOrNull = $listener->handle($event);
+                if ($futureOrNull === null) {
+                    return Future::complete();
+                } else {
+                    return $futureOrNull;
+                }
+            },
+            $this->getListeners($event->getName())
+        );
+
+        $compositeFuture = new CompositeFuture([]);
+        $confirmedFutures = [];
+
+        foreach ($futures as $future) {
+            if ($future instanceof Future) {
+                $confirmedFutures[] = $future;
+            } else {
+                $compositeFuture = $compositeFuture->merge($future);
+            }
         }
-        return new CompositeFuture($futures);
+
+        return $compositeFuture->merge(new CompositeFuture($confirmedFutures));
     }
 
     /**
      * @inheritDoc
      */
     public function listenerCount(string $event) : int {
-        return count($this->listeners($event));
+        return count($this->getListeners($event));
     }
 
     /**
      * @inheritDoc
      */
-    public function listeners(string $event) : array {
-        return $this->listeners[$event] ?? [];
+    public function getListeners(string $event) : array {
+        return array_values(array_filter($this->listeners, fn(Listener $listener) => $listener->canHandle($event)));
     }
 }

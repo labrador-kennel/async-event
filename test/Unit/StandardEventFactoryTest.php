@@ -6,14 +6,13 @@ declare(strict_types = 1);
  * @license See LICENSE file in project root
  */
 
-namespace Cspray\Labrador\AsyncEvent\Test;
+namespace Cspray\Labrador\AsyncEvent\Test\Unit;
 
+use Cspray\Labrador\AsyncEvent\Event;
 use Cspray\Labrador\AsyncEvent\StandardEvent;
 use Cspray\Labrador\AsyncEvent\StandardEventFactory;
+use Cspray\Labrador\AsyncEvent\Test\Unit\Stub\FooEventStub;
 use Cspray\Labrador\Exception\InvalidTypeException;
-use Cspray\Labrador\AsyncEvent\Event;
-use Cspray\Labrador\AsyncEvent\Test\Stub\FooEventStub;
-
 use PHPUnit\Framework\TestCase as UnitTestCase;
 
 class StandardEventFactoryTest extends UnitTestCase {

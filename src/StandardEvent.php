@@ -16,7 +16,7 @@ class StandardEvent implements Event {
     private string $name;
     private object $target;
     private array $data;
-    private DateTimeInterface $createdAt;
+    private DateTimeImmutable $createdAt;
 
     public function __construct(string $name, object $target, array $data = []) {
         $this->name = $name;
@@ -37,7 +37,7 @@ class StandardEvent implements Event {
         return $this->data;
     }
 
-    public function getCreatedAt() : DateTimeInterface {
+    public function getCreatedAt() : DateTimeImmutable {
         return $this->createdAt;
     }
 }
