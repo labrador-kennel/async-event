@@ -6,15 +6,20 @@
 
 - Support for Amp 3.0 and Fibers.
 - Adds the `cspray/labrador-composite-future` library for handling a collection of Futures.
+- Adds support for integrating with `cspray/annotated-container` to handle dependency injection and autowiring of listeners.
+- Adds an explicit `EventEmitter::queue(Event $event) : void` method for when you want to "fire-and-forget" events. Queued events will be emitted on the next tick of the event loop.
 
 #### Changed
 
 - The emitter's emit method signature has been changed to: `EventEmitter::emit(Event $event) : CompositeFuture`. 
+- The emitter's register method signature has been changed to `EventEmitter::register(Listener $listener) : ListenerRegistration`
 - Type hints in object properties and other places not allowed before 8.0 were added.
+- Listeners must now implement a `Cspray\Labrador\AsyncEvent\Listener` interface. Plain callables are no longer supported.
+- Registering a listener no longer returns a listener ID, instead an object allows for removal of the listener.
 
 #### Removed
 
-- Removed PHP 7 support. This library now only supports PHP 8.0 with ext-fiber or PHP 8.1 natively.
+- Removed PHP 7 support. This library now only supports PHP 8.1+.
 - Removed the concept of a `PromiseCombinator` and all corresponding methods.
 - Removed cspray/yape as enums are not necessary without the `PromiseCombinator`.
 
