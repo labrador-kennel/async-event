@@ -32,6 +32,8 @@ interface EventEmitter {
      */
     public function emit(Event $event) : CompositeFuture;
 
+    public function queue(Event $event) : void;
+
     /**
      * Return the number of listeners registered for a specific event.
      *

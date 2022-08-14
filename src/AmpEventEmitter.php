@@ -2,10 +2,12 @@
 
 namespace Cspray\Labrador\AsyncEvent;
 
+use Amp\CompositeException;
 use Amp\Future;
 use Cspray\AnnotatedContainer\Attribute\Service;
 use Cspray\Labrador\AsyncEvent\Internal\CallableListenerRegistration;
 use Labrador\CompositeFuture\CompositeFuture;
+use Revolt\EventLoop;
 use function Amp\async;
 
 /**
@@ -61,6 +63,15 @@ final class AmpEventEmitter implements EventEmitter {
         }
 
         return $compositeFuture->merge(new CompositeFuture($confirmedFutures));
+    }
+
+    public function queue(Event $event) : void {
+        EventLoop::queue(function() use($event) : void {
+            [$exceptions] = $this->emit($event)->awaitAll();
+            if (count($exceptions) !== 0) {
+                throw new CompositeException($exceptions);
+            }
+        });
     }
 
     /**

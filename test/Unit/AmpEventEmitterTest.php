@@ -2,16 +2,18 @@
 
 namespace Cspray\Labrador\AsyncEvent\Test\Unit;
 
+use Amp\CompositeException;
+use Amp\DeferredFuture;
 use Amp\Future;
 use Amp\PHPUnit\AsyncTestCase;
 use Cspray\Labrador\AsyncEvent\AmpEventEmitter;
 use Cspray\Labrador\AsyncEvent\OneTimeListener;
 use Cspray\Labrador\AsyncEvent\StandardEvent;
-use Cspray\Labrador\AsyncEvent\Test\Stub\EvenNumberedDelayedListener;
 use Cspray\Labrador\AsyncEvent\Test\Unit\Stub\AddToValueStoreListener;
 use Cspray\Labrador\AsyncEvent\Test\Unit\Stub\StubEventListener;
 use Cspray\Labrador\AsyncEvent\Test\Unit\Stub\ValueStore;
 use Labrador\CompositeFuture\CompositeFuture;
+use Revolt\EventLoop;
 
 class AmpEventEmitterTest extends AsyncTestCase {
 
@@ -173,5 +175,42 @@ class AmpEventEmitterTest extends AsyncTestCase {
         $subject->emit($this->standardEvent('foo'))->await();
 
         $this->assertSame([1], $valueStore->getValues());
+    }
+
+    public function testQueueing() : void {
+        $valueStore = new ValueStore();
+        $listener = new AddToValueStoreListener($valueStore, 'foo', 1);
+        $subject = new AmpEventEmitter();
+        $subject->register($listener);
+        $subject->register(new OneTimeListener($listener));
+
+        $subject->queue($this->standardEvent('foo'));
+
+        // Force the event loop to tick again, otherwise our queued events won't run
+        $deferred = new DeferredFuture();
+        EventLoop::defer(static fn() => $deferred->complete());
+        $deferred->getFuture()->await();
+
+        self::assertSame([1, 1], $valueStore->getValues());
+    }
+
+    public function testQueueingFailure() : void {
+        $listener = new StubEventListener('foo', Future::error($error = new \RuntimeException()));
+        $subject = new AmpEventEmitter();
+        $subject->register($listener);
+
+        $subject->queue($this->standardEvent('foo'));
+
+        $data = new \stdClass();
+        $data->throwable = null;
+        EventLoop::setErrorHandler(fn($throwable) => $data->throwable = $throwable);
+
+        // Force the event loop to tick again, otherwise our queued events won't run
+        $deferred = new DeferredFuture();
+        EventLoop::defer(static fn() => $deferred->complete());
+        $deferred->getFuture()->await();
+
+        self::assertInstanceOf(CompositeException::class, $data->throwable);
+        self::assertSame($data->throwable->getReasons(), [$error]);
     }
 }
