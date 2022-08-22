@@ -23,11 +23,15 @@ final class AutowiringEventListeners implements Observer {
         // noop
     }
 
-    public function afterContainerCreation(ContainerDefinition $containerDefinition, AnnotatedContainer $container) : void {
+    public function afterContainerCreation(
+        ContainerDefinition $containerDefinition,
+        AnnotatedContainer $container
+    ) : void {
         $emitter = $container->get(EventEmitter::class);
         assert($emitter instanceof EventEmitter);
         foreach ($containerDefinition->getServiceDefinitions() as $serviceDefinition) {
-            if ($serviceDefinition->isAbstract() || !is_a($serviceDefinition->getType()->getName(), Listener::class, true)) {
+            if ($serviceDefinition->isAbstract() ||
+                !is_a($serviceDefinition->getType()->getName(), Listener::class, true)) {
                 continue;
             }
 
@@ -47,6 +51,5 @@ final class AutowiringEventListeners implements Observer {
 
             $emitter->register($listener);
         }
-
     }
 }

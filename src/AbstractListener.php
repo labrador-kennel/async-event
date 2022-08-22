@@ -13,5 +13,4 @@ abstract class AbstractListener implements Listener {
     final protected function getRegistration() : ?ListenerRegistration {
         return $this->registration;
     }
-
 }
