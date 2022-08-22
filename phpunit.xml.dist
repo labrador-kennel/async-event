@@ -5,8 +5,10 @@
       <directory suffix=".php">./src</directory>
     </include>
     <report>
-      <text outputFile="php://stdout" showOnlySummary="false" />
+      <text outputFile="php://stdout" />
+      <!--
       <html outputDirectory="build/code-coverage/html" />
+      -->
     </report>
   </coverage>
   <testsuites>

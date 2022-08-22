@@ -4,32 +4,15 @@ namespace Cspray\Labrador\AsyncEvent\Test\Integration;
 
 use Amp\PHPUnit\AsyncTestCase;
 use Cspray\AnnotatedContainer\AnnotatedContainer;
-use Cspray\AnnotatedContainer\ContainerDefinitionCompileOptionsBuilder;
+use Cspray\AnnotatedContainer\Bootstrap;
 use Cspray\Labrador\AsyncEvent\AmpEventEmitter;
-use Cspray\Labrador\AsyncEvent\DepedencyInjection\AutowiringEventListeners;
 use Cspray\Labrador\AsyncEvent\EventEmitter;
 use Cspray\Labrador\AsyncEvent\StandardEvent;
-use function Cspray\AnnotatedContainer\compiler;
-use function Cspray\AnnotatedContainer\containerFactory;
-use function Cspray\AnnotatedContainer\eventEmitter;
 
 class AutowiringListenersTest extends AsyncTestCase {
 
-    private static bool $listenerRegistered = false;
-
     private function getContainer() : AnnotatedContainer {
-        if (!self::$listenerRegistered) {
-            eventEmitter()->registerListener(new AutowiringEventListeners());
-            self::$listenerRegistered = true;
-        }
-        $containerDef = compiler()->compile(
-            ContainerDefinitionCompileOptionsBuilder::scanDirectories(
-                __DIR__ . '/Listeners',                   // integration test source
-                dirname(__DIR__, 2) . '/src'        // library's source
-            )->build()
-        );
-
-        return containerFactory()->createContainer($containerDef);
+        return (new Bootstrap())->bootstrapContainer();
     }
 
     public function testEmitOneTime() : void {
