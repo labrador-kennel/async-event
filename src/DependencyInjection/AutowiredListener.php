@@ -1,6 +1,6 @@
 <?php
 
-namespace Cspray\Labrador\AsyncEvent\DepedencyInjection;
+namespace Cspray\Labrador\AsyncEvent\DependencyInjection;
 
 use Cspray\AnnotatedContainer\Attribute\ServiceAttribute;
 use Cspray\Labrador\AsyncEvent\ListenerRegistration;
