@@ -36,5 +36,4 @@ interface Listener {
      * @return Future|CompositeFuture|null
      */
     public function handle(Event $event) : Future|CompositeFuture|null;
-
 }
