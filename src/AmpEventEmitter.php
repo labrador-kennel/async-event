@@ -1,19 +1,18 @@
 <?php declare(strict_types = 1);
 
-namespace Cspray\Labrador\AsyncEvent;
+namespace Labrador\AsyncEvent;
 
 use Amp\CompositeException;
 use Amp\Future;
 use Cspray\AnnotatedContainer\Attribute\Service;
-use Cspray\Labrador\AsyncEvent\Internal\CallableListenerRegistration;
+use Labrador\AsyncEvent\Internal\CallableListenerRegistration;
 use Labrador\CompositeFuture\CompositeFuture;
 use Revolt\EventLoop;
-use function Amp\async;
+use Throwable;
 
 /**
  * An EventEmitter implementation powered by Amp.
  *
- * @package Cspray\Labrador\AsyncEvent
  * @license See LICENSE in source root
  */
 #[Service]
@@ -26,7 +25,7 @@ final class AmpEventEmitter implements EventEmitter {
 
     public function register(Listener $listener) : ListenerRegistration {
         $listenerKey = random_bytes(16);
-        $remover = function() use($listenerKey) {
+        $remover = function() use($listenerKey) : void {
             unset($this->listeners[$listenerKey]);
         };
         $registration = new CallableListenerRegistration($remover);
@@ -40,7 +39,7 @@ final class AmpEventEmitter implements EventEmitter {
      */
     public function emit(Event $event) : CompositeFuture {
         $futures = array_map(
-            function(Listener $listener) use($event) {
+            function(Listener $listener) use($event) : Future|CompositeFuture {
                 $futureOrNull = $listener->handle($event);
                 if ($futureOrNull === null) {
                     return Future::complete();
@@ -54,6 +53,7 @@ final class AmpEventEmitter implements EventEmitter {
         $compositeFuture = new CompositeFuture([]);
         $confirmedFutures = [];
 
+        /** @var Future|CompositeFuture $future */
         foreach ($futures as $future) {
             if ($future instanceof Future) {
                 $confirmedFutures[] = $future;
@@ -67,6 +67,7 @@ final class AmpEventEmitter implements EventEmitter {
 
     public function queue(Event $event) : void {
         EventLoop::queue(function() use($event) : void {
+            /** @var list<Throwable> $exceptions */
             [$exceptions] = $this->emit($event)->awaitAll();
             if (count($exceptions) !== 0) {
                 throw new CompositeException($exceptions);

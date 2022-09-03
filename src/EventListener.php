@@ -1,13 +1,18 @@
 <?php
 
-namespace Cspray\Labrador\AsyncEvent\DependencyInjection;
+namespace Labrador\AsyncEvent;
 
 use Cspray\AnnotatedContainer\Attribute\ServiceAttribute;
-use Cspray\Labrador\AsyncEvent\ListenerRegistration;
+use Attribute;
 
-#[\Attribute(\Attribute::TARGET_CLASS)]
-class AutowiredListener implements ServiceAttribute {
+#[Attribute(Attribute::TARGET_CLASS)]
+final class EventListener implements ServiceAttribute {
 
+    /**
+     * @param ListenerRemoval $listenerRemoval
+     * @param list<string> $profiles
+     * @param string|null $name
+     */
     public function __construct(
         private readonly ListenerRemoval $listenerRemoval = ListenerRemoval::NeverRemove,
         private readonly array $profiles = [],

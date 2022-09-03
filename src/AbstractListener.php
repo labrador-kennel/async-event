@@ -1,6 +1,6 @@
 <?php
 
-namespace Cspray\Labrador\AsyncEvent;
+namespace Labrador\AsyncEvent;
 
 abstract class AbstractListener implements Listener {
 

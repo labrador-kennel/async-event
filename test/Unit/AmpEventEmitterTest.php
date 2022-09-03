@@ -1,17 +1,17 @@
 <?php declare(strict_types=1);
 
-namespace Cspray\Labrador\AsyncEvent\Test\Unit;
+namespace Labrador\AsyncEvent\Test\Unit;
 
 use Amp\CompositeException;
 use Amp\DeferredFuture;
 use Amp\Future;
 use Amp\PHPUnit\AsyncTestCase;
-use Cspray\Labrador\AsyncEvent\AmpEventEmitter;
-use Cspray\Labrador\AsyncEvent\OneTimeListener;
-use Cspray\Labrador\AsyncEvent\StandardEvent;
-use Cspray\Labrador\AsyncEvent\Test\Unit\Stub\AddToValueStoreListener;
-use Cspray\Labrador\AsyncEvent\Test\Unit\Stub\StubEventListener;
-use Cspray\Labrador\AsyncEvent\Test\Unit\Stub\ValueStore;
+use Labrador\AsyncEvent\AmpEventEmitter;
+use Labrador\AsyncEvent\OneTimeListener;
+use Labrador\AsyncEvent\StandardEvent;
+use Labrador\AsyncEvent\Test\Unit\Stub\AddToValueStoreListener;
+use Labrador\AsyncEvent\Test\Unit\Stub\StubEventListener;
+use Labrador\AsyncEvent\Test\Unit\Stub\ValueStore;
 use Labrador\CompositeFuture\CompositeFuture;
 use Revolt\EventLoop;
 

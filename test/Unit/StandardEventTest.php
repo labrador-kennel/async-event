@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace Cspray\Labrador\AsyncEvent\Test\Unit;
+namespace Labrador\AsyncEvent\Test\Unit;
 
-use Cspray\Labrador\AsyncEvent\StandardEvent;
+use Labrador\AsyncEvent\StandardEvent;
 use PHPUnit\Framework\TestCase;
 
 class StandardEventTest extends TestCase {

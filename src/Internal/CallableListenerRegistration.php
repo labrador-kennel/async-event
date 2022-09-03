@@ -1,8 +1,8 @@
 <?php
 
-namespace Cspray\Labrador\AsyncEvent\Internal;
+namespace Labrador\AsyncEvent\Internal;
 
-use Cspray\Labrador\AsyncEvent\ListenerRegistration;
+use Labrador\AsyncEvent\ListenerRegistration;
 
 final class CallableListenerRegistration implements ListenerRegistration {
 

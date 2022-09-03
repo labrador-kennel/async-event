@@ -1,9 +1,10 @@
 <?php declare(strict_types = 1);
 
-namespace Cspray\Labrador\AsyncEvent;
+namespace Labrador\AsyncEvent;
 
 use Cspray\AnnotatedContainer\Attribute\Service;
-use Cspray\Labrador\Exception\InvalidTypeException;
+use Labrador\AsyncEvent\Exception\InvalidEventFactory;
+use Labrador\Exception\InvalidTypeException;
 
 /**
  * An EventFactory implementation that will fallback to constructing a StandardEvent in the case where an Event is
@@ -11,12 +12,15 @@ use Cspray\Labrador\Exception\InvalidTypeException;
  *
  * If you do want to override the type of any Event created simply call the register(string, callable) method.
  *
- * @package Cspray\Labrador\AsyncEvent
+ * @package Labrador\AsyncEvent
  * @license See LICENSE in source root
  */
 #[Service]
 final class StandardEventFactory implements EventFactory {
 
+    /**
+     * @var array<string, callable>
+     */
     private array $eventFactories;
 
     public function __construct() {
@@ -29,7 +33,7 @@ final class StandardEventFactory implements EventFactory {
      * @param array $eventData
      * @param mixed ...$args
      * @return Event
-     * @throws InvalidTypeException
+     * @throws InvalidEventFactory
      */
     public function create(string $eventName, object $target, array $eventData = [], ...$args) : Event {
         if (!array_key_exists($eventName, $this->eventFactories)) {
@@ -39,18 +43,21 @@ final class StandardEventFactory implements EventFactory {
         $event = $this->eventFactories[$eventName]($target, $eventData, ...$args);
         $this->validateFactoryCreatedEvent($event, $eventName);
 
+        assert($event instanceof Event);
+
         return $event;
     }
 
-    private function validateFactoryCreatedEvent($event, $eventName) {
+    private function validateFactoryCreatedEvent(mixed $event, string $eventName) : void {
         if (!$event instanceof Event) {
-            $msg = 'Factory functions MUST return an instance of %s but "%s" returned "%s".';
-            throw new InvalidTypeException(sprintf($msg, Event::class, $eventName, gettype($event)));
+            throw InvalidEventFactory::fromFactoryDidNotReturnEvent(
+                $eventName,
+                is_object($event) ? $event::class : gettype($event)
+            );
         }
 
         if ($event->getName() !== $eventName) {
-            $msg = 'Factory functions MUST return an instance of %s with the same name as "%s"';
-            throw new InvalidTypeException(sprintf($msg, Event::class, $eventName));
+            throw InvalidEventFactory::fromFactoryReturnedIncorrectEventName($eventName);
         }
     }
 
@@ -68,7 +75,7 @@ final class StandardEventFactory implements EventFactory {
      * @param string $eventName
      * @param callable $factoryFunction
      */
-    public function register(string $eventName, callable $factoryFunction) {
+    public function register(string $eventName, callable $factoryFunction) : void {
         $this->eventFactories[$eventName] = $factoryFunction;
     }
 }

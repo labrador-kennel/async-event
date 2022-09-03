@@ -1,11 +1,11 @@
 <?php
 
-namespace Cspray\Labrador\AsyncEvent\Test\Unit\Stub;
+namespace Labrador\AsyncEvent\Test\Unit\Stub;
 
 use Amp\Future;
-use Cspray\Labrador\AsyncEvent\Event;
-use Cspray\Labrador\AsyncEvent\Listener;
-use Cspray\Labrador\AsyncEvent\ListenerRegistration;
+use Labrador\AsyncEvent\Event;
+use Labrador\AsyncEvent\Listener;
+use Labrador\AsyncEvent\ListenerRegistration;
 use Labrador\CompositeFuture\CompositeFuture;
 
 class AddToValueStoreListener implements Listener {

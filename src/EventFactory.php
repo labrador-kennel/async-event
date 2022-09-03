@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace Cspray\Labrador\AsyncEvent;
+namespace Labrador\AsyncEvent;
 
 use Cspray\AnnotatedContainer\Attribute\Service;
 
@@ -22,9 +22,9 @@ interface EventFactory {
      *
      * @param string $eventName
      * @param object $target
-     * @param array $eventData
-     * @param array $eventConstructorArgs
+     * @param array<array-key, mixed> $eventData
+     * @param list<mixed> $args
      * @return Event
      */
-    public function create(string $eventName, object $target, array $eventData = [], ...$eventConstructorArgs) : Event;
+    public function create(string $eventName, object $target, array $eventData = [], ...$args) : Event;
 }

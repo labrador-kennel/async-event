@@ -1,6 +1,6 @@
 <?php
 
-namespace Cspray\Labrador\AsyncEvent\Test\Unit\Stub;
+namespace Labrador\AsyncEvent\Test\Unit\Stub;
 
 class ValueStore {
 

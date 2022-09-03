@@ -1,15 +1,15 @@
 <?php
 
-namespace Cspray\Labrador\AsyncEvent\Test\Integration\Listeners;
+namespace Labrador\AsyncEvent\Test\Integration\Listeners;
 
 use Amp\Future;
-use Cspray\Labrador\AsyncEvent\AbstractListener;
-use Cspray\Labrador\AsyncEvent\DependencyInjection\AutowiredListener;
-use Cspray\Labrador\AsyncEvent\DependencyInjection\ListenerRemoval;
-use Cspray\Labrador\AsyncEvent\Event;
+use Labrador\AsyncEvent\AbstractListener;
+use Labrador\AsyncEvent\EventListener;
+use Labrador\AsyncEvent\Event;
+use Labrador\AsyncEvent\ListenerRemoval;
 use Labrador\CompositeFuture\CompositeFuture;
 
-#[AutowiredListener(ListenerRemoval::AfterOneEvent)]
+#[EventListener(ListenerRemoval::AfterOneEvent)]
 class BazListener extends AbstractListener {
 
     public function handle(Event $event) : Future|CompositeFuture|null {

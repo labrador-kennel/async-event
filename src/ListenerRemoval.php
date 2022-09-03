@@ -1,6 +1,6 @@
 <?php
 
-namespace Cspray\Labrador\AsyncEvent\DependencyInjection;
+namespace Labrador\AsyncEvent;
 
 enum ListenerRemoval : string {
     case NeverRemove = 'never';
