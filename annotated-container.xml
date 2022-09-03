@@ -7,6 +7,6 @@
     </source>
   </scanDirectories>
   <observers>
-    <fqcn>Cspray\Labrador\AsyncEvent\DependencyInjection\AutowiringEventListeners</fqcn>
+    <fqcn>Labrador\AsyncEvent\DependencyInjection\AutowireObserver</fqcn>
   </observers>
 </annotatedContainer>

@@ -6,9 +6,9 @@ declare(strict_types = 1);
  * @license See LICENSE file in project root
  */
 
-namespace Cspray\Labrador\AsyncEvent\Test\Unit\Stub;
+namespace Labrador\AsyncEvent\Test\Unit\Stub;
 
-use Cspray\Labrador\AsyncEvent\StandardEvent;
+use Labrador\AsyncEvent\StandardEvent;
 
 class FooEventStub extends StandardEvent {
 

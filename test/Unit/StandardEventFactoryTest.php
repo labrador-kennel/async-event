@@ -6,13 +6,14 @@ declare(strict_types = 1);
  * @license See LICENSE file in project root
  */
 
-namespace Cspray\Labrador\AsyncEvent\Test\Unit;
+namespace Labrador\AsyncEvent\Test\Unit;
 
-use Cspray\Labrador\AsyncEvent\Event;
-use Cspray\Labrador\AsyncEvent\StandardEvent;
-use Cspray\Labrador\AsyncEvent\StandardEventFactory;
-use Cspray\Labrador\AsyncEvent\Test\Unit\Stub\FooEventStub;
-use Cspray\Labrador\Exception\InvalidTypeException;
+use Labrador\AsyncEvent\Event;
+use Labrador\AsyncEvent\Exception\InvalidEventFactory;
+use Labrador\AsyncEvent\StandardEvent;
+use Labrador\AsyncEvent\StandardEventFactory;
+use Labrador\AsyncEvent\Test\Unit\Stub\FooEventStub;
+use Labrador\Exception\InvalidTypeException;
 use PHPUnit\Framework\TestCase as UnitTestCase;
 
 class StandardEventFactoryTest extends UnitTestCase {
@@ -35,7 +36,7 @@ class StandardEventFactoryTest extends UnitTestCase {
             return 'not an EventInterface';
         });
 
-        $this->expectException(InvalidTypeException::class);
+        $this->expectException(InvalidEventFactory::class);
         $msg = 'Factory functions MUST return an instance of ' . Event::class . ' but "bar.event" returned "string".';
         $this->expectExceptionMessage($msg);
 
@@ -48,7 +49,7 @@ class StandardEventFactoryTest extends UnitTestCase {
             return new StandardEvent('not.bar.event', new \stdClass());
         });
 
-        $this->expectException(InvalidTypeException::class);
+        $this->expectException(InvalidEventFactory::class);
         $msg = 'Factory functions MUST return an instance of ' . Event::class . ' with the same name as "bar.event"';
         $this->expectExceptionMessage($msg);
 

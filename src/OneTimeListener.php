@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Cspray\Labrador\AsyncEvent;
+namespace Labrador\AsyncEvent;
 
 use Amp\Future;
 use Labrador\CompositeFuture\CompositeFuture;

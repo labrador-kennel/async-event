@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Cspray\Labrador\AsyncEvent;
+namespace Labrador\AsyncEvent;
 
 use DateTimeInterface;
 use DateTimeImmutable;
@@ -9,7 +9,7 @@ use DateTimeImmutable;
  * An Event implementation that is used by the StandardEventFactory as a fallback Event in the case where a custom
  * event factory has not been registered for the given event name.
  *
- * @package Cspray\Labrador\AsyncEvent
+ * @package Labrador\AsyncEvent
  */
 class StandardEvent implements Event {
 
