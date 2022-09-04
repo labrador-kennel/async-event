@@ -18,12 +18,13 @@ final class AutowireObserver extends ServiceWiringObserver {
         assert($emitter instanceof EventEmitter);
 
         /** @var Listener $listener */
-        foreach ($gatherer->getServicesForType(Listener::class) as $listener) {
-            $reflection = new \ReflectionObject($listener);
-            $autowiredAttr = $reflection->getAttributes(EventListener::class);
-            $autowire = $autowiredAttr === [] ? null : $autowiredAttr[0]->newInstance();
+        foreach ($gatherer->getServicesForType(Listener::class) as $listenerAndDefinition) {
+            $listener = $listenerAndDefinition->getService();
+            $autowire = $listenerAndDefinition->getDefinition()->getAttribute();
 
-            if ($autowire?->getListenerRemoval() === ListenerRemoval::AfterOneEvent) {
+            assert($listener instanceof Listener);
+
+            if ($autowire instanceof EventListener && $autowire->getListenerRemoval() === ListenerRemoval::AfterOneEvent) {
                 $listener = new OneTimeListener($listener);
             }
 
