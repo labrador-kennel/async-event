@@ -24,7 +24,8 @@ final class AutowireObserver extends ServiceWiringObserver {
 
             assert($listener instanceof Listener);
 
-            if ($autowire instanceof EventListener && $autowire->getListenerRemoval() === ListenerRemoval::AfterOneEvent) {
+            if ($autowire instanceof EventListener &&
+                    $autowire->getListenerRemoval() === ListenerRemoval::AfterOneEvent) {
                 $listener = new OneTimeListener($listener);
             }
 
