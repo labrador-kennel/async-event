@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "bc44bfd69acf868b66e21e8a593d49c8",
+    "content-hash": "3ee8a266a7b8ab5f1b7201724373021b",
     "packages": [
         {
             "name": "amphp/amp",
@@ -145,16 +145,16 @@
         },
         {
             "name": "cspray/annotated-container",
-            "version": "v2.x-dev",
+            "version": "v2.0.0-beta2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cspray/annotated-container.git",
-                "reference": "7490a5dc0ee49296c82e3a95958f8aaa64c32324"
+                "reference": "19874889674544fed311f6fcb9964bd06242d893"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cspray/annotated-container/zipball/7490a5dc0ee49296c82e3a95958f8aaa64c32324",
-                "reference": "7490a5dc0ee49296c82e3a95958f8aaa64c32324",
+                "url": "https://api.github.com/repos/cspray/annotated-container/zipball/19874889674544fed311f6fcb9964bd06242d893",
+                "reference": "19874889674544fed311f6fcb9964bd06242d893",
                 "shasum": ""
             },
             "require": {
@@ -188,7 +188,6 @@
             "autoload": {
                 "files": [
                     "src/Function/auto-wired-parameters.php",
-                    "src/Function/class-alias.php",
                     "src/Function/definitions.php"
                 ],
                 "psr-4": {
@@ -215,9 +214,9 @@
             ],
             "support": {
                 "issues": "https://github.com/cspray/annotated-container/issues",
-                "source": "https://github.com/cspray/annotated-container/tree/v2"
+                "source": "https://github.com/cspray/annotated-container/tree/v2.0.0-beta2"
             },
-            "time": "2022-08-31T13:20:24+00:00"
+            "time": "2022-09-04T17:03:15+00:00"
         },
         {
             "name": "cspray/annotated-target",
@@ -394,16 +393,16 @@
         },
         {
             "name": "nikic/php-parser",
-            "version": "v4.14.0",
+            "version": "v4.15.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nikic/PHP-Parser.git",
-                "reference": "34bea19b6e03d8153165d8f30bba4c3be86184c1"
+                "reference": "0ef6c55a3f47f89d7a374e6f835197a0b5fcf900"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/34bea19b6e03d8153165d8f30bba4c3be86184c1",
-                "reference": "34bea19b6e03d8153165d8f30bba4c3be86184c1",
+                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/0ef6c55a3f47f89d7a374e6f835197a0b5fcf900",
+                "reference": "0ef6c55a3f47f89d7a374e6f835197a0b5fcf900",
                 "shasum": ""
             },
             "require": {
@@ -444,9 +443,9 @@
             ],
             "support": {
                 "issues": "https://github.com/nikic/PHP-Parser/issues",
-                "source": "https://github.com/nikic/PHP-Parser/tree/v4.14.0"
+                "source": "https://github.com/nikic/PHP-Parser/tree/v4.15.1"
             },
-            "time": "2022-05-31T20:59:12+00:00"
+            "time": "2022-09-04T07:30:47+00:00"
         },
         {
             "name": "psr/container",
@@ -2552,7 +2551,7 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "amphp/amp": 10,
-        "cspray/annotated-container": 20,
+        "cspray/annotated-container": 10,
         "amphp/phpunit-util": 10
     },
     "prefer-stable": false,

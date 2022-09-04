@@ -4,7 +4,7 @@ namespace Labrador\AsyncEvent\Test\Integration;
 
 use Amp\PHPUnit\AsyncTestCase;
 use Cspray\AnnotatedContainer\AnnotatedContainer;
-use Cspray\AnnotatedContainer\Bootstrap;
+use Cspray\AnnotatedContainer\Bootstrap\Bootstrap;
 use Labrador\AsyncEvent\AmpEventEmitter;
 use Labrador\AsyncEvent\EventEmitter;
 use Labrador\AsyncEvent\StandardEvent;
