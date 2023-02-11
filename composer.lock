@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0c2be19c563a0949c1ef7896d4272aa1",
+    "content-hash": "32467f364886fe0fe35aab9bef963b7e",
     "packages": [
         {
             "name": "amphp/amp",
@@ -138,16 +138,16 @@
         },
         {
             "name": "cspray/annotated-container",
-            "version": "v2.0.0-rc2",
+            "version": "v2.0.0-rc3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cspray/annotated-container.git",
-                "reference": "60a7af450527101575842e03425e29f80c99028c"
+                "reference": "f4a7e1cfd01a70c7c5eff2254ae3deebdceaaed4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cspray/annotated-container/zipball/60a7af450527101575842e03425e29f80c99028c",
-                "reference": "60a7af450527101575842e03425e29f80c99028c",
+                "url": "https://api.github.com/repos/cspray/annotated-container/zipball/f4a7e1cfd01a70c7c5eff2254ae3deebdceaaed4",
+                "reference": "f4a7e1cfd01a70c7c5eff2254ae3deebdceaaed4",
                 "shasum": ""
             },
             "require": {
@@ -208,9 +208,9 @@
             ],
             "support": {
                 "issues": "https://github.com/cspray/annotated-container/issues",
-                "source": "https://github.com/cspray/annotated-container/tree/v2.0.0-rc2"
+                "source": "https://github.com/cspray/annotated-container/tree/v2.0.0-rc3"
             },
-            "time": "2023-02-11T20:27:13+00:00"
+            "time": "2023-02-11T22:10:17+00:00"
         },
         {
             "name": "cspray/annotated-target",
