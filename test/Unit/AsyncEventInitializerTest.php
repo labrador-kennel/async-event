@@ -31,6 +31,4 @@ final class AsyncEventInitializerTest extends TestCase {
 
         self::assertNull($actual);
     }
-
-
 }
