@@ -1,6 +1,20 @@
 # Changelog
 
-## v3.0.0 - 2022-02-12
+## Unreleased Changes
+
+#### Added
+
+- Provided tests for the `ListenerService` attribute, code coverage is not at 100%.
+
+#### Changed
+
+- Renamed the `EventListener` attribute to `ListenerService`.
+
+#### Removed
+
+- Removed `cspray/annotated-container` library. Attributes are provided by `cspray/annotated-container-attribute`. Please see `labrador-kennel/annotated-container-autowire` for autowire functionality when using Annotated Container.
+
+## v3.0.0-beta1
 
 #### Added
 

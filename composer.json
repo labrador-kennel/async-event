@@ -18,7 +18,7 @@
   "require": {
     "php": "^8.1",
     "amphp/amp": "~v3.0",
-    "cspray/annotated-container": "^v2.0.0-rc3",
+    "cspray/annotated-container-attribute": "^v1.0",
     "labrador-kennel/composite-future": "^1.2"
   },
   "require-dev": {

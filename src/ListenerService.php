@@ -6,7 +6,7 @@ use Cspray\AnnotatedContainer\Attribute\ServiceAttribute;
 use Attribute;
 
 #[Attribute(Attribute::TARGET_CLASS)]
-final class EventListener implements ServiceAttribute {
+final class ListenerService implements ServiceAttribute {
 
     /**
      * @param ListenerRemoval $listenerRemoval
