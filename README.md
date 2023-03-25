@@ -92,9 +92,9 @@ use Amp\Future;
 use Labrador\AsyncEvent\AbstractListener;
 use Labrador\AsyncEvent\Event;
 use Labrador\CompositeFuture\CompositeFuture;
-use Labrador\AsyncEvent\EventListener;
+use Labrador\AsyncEvent\ListenerService;
 
-#[EventListener]
+#[ListenerService]
 final class MyListener extends AbstractListener {
 
     public function canHandle(string $eventName) : bool {
