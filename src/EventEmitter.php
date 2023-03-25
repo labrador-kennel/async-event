@@ -18,10 +18,10 @@ interface EventEmitter {
      * Register a Listener to respond to emitted events; the ListenerRegistration returned can be used to remove the
      * Listener.
      *
-     * @param Listener $listener
+     * @param Listener|ListenerProvider $listener
      * @return ListenerRegistration
      */
-    public function register(Listener $listener) : ListenerRegistration;
+    public function register(Listener|ListenerProvider $listener) : ListenerRegistration;
 
     /**
      * Immediately invokes all registered listeners that can handle the given $event.

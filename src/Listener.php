@@ -5,7 +5,6 @@ namespace Labrador\AsyncEvent;
 use Amp\Future;
 use Labrador\CompositeFuture\CompositeFuture;
 
-#[ListenerService]
 interface Listener {
 
     /**
