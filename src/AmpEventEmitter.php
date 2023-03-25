@@ -23,11 +23,14 @@ final class AmpEventEmitter implements EventEmitter {
      */
     private array $listeners = [];
 
-    public function register(Listener $listener) : ListenerRegistration {
+    public function register(Listener|ListenerProvider $listener) : ListenerRegistration {
         $listenerKey = random_bytes(16);
         $remover = function() use($listenerKey) : void {
             unset($this->listeners[$listenerKey]);
         };
+        if ($listener instanceof ListenerProvider) {
+            $listener = $listener->getListener();
+        }
         $registration = new CallableListenerRegistration($remover);
         $listener->setRegistration($registration);
         $this->listeners[$listenerKey] = $listener;

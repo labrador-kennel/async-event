@@ -12,7 +12,7 @@
 
 #### Removed
 
-- Removed `cspray/annotated-container` library. Attributes are provided by `cspray/annotated-container-attribute`. Please see `labrador-kennel/annotated-container-autowire` for autowire functionality when using Annotated Container.
+- Removed `cspray/annotated-container` library. The functionality previously provided by these  
 
 ## v3.0.0-beta1
 

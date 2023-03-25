@@ -11,6 +11,7 @@ use Labrador\AsyncEvent\OneTimeListener;
 use Labrador\AsyncEvent\StandardEvent;
 use Labrador\AsyncEvent\Test\Unit\Stub\AddToValueStoreListener;
 use Labrador\AsyncEvent\Test\Unit\Stub\StubEventListener;
+use Labrador\AsyncEvent\Test\Unit\Stub\StubEventListenerProvider;
 use Labrador\AsyncEvent\Test\Unit\Stub\ValueStore;
 use Labrador\CompositeFuture\CompositeFuture;
 use Revolt\EventLoop;
@@ -212,5 +213,15 @@ class AmpEventEmitterTest extends AsyncTestCase {
 
         self::assertInstanceOf(CompositeException::class, $data->throwable);
         self::assertSame($data->throwable->getReasons(), [$error]);
+    }
+
+    public function testProviderGivenCallsCorrespondingListener() : void {
+        $listenerProvider = new StubEventListenerProvider('something', null);
+
+        $subject = new AmpEventEmitter();
+        $subject->register($listenerProvider);
+        $subject->emit($event = $this->standardEvent('something'));
+
+        self::assertSame($event, $listenerProvider->getHandledEvent());
     }
 }
