@@ -2,16 +2,13 @@
 
 namespace Labrador\AsyncEvent;
 
-use Cspray\AnnotatedContainer\Attribute\Service;
 use Labrador\CompositeFuture\CompositeFuture;
-use Labrador\CompositeFuture\CompositeFutureHandler;
 
 /**
  * Represents an object that allows listeners to respond to emitted events asynchronously.
  *
  * @package Labrador\AsyncEvent
  */
-#[Service]
 interface EventEmitter {
 
     /**

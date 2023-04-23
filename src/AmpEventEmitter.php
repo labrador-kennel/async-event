@@ -4,7 +4,6 @@ namespace Labrador\AsyncEvent;
 
 use Amp\CompositeException;
 use Amp\Future;
-use Cspray\AnnotatedContainer\Attribute\Service;
 use Labrador\AsyncEvent\Internal\CallableListenerRegistration;
 use Labrador\CompositeFuture\CompositeFuture;
 use Revolt\EventLoop;
@@ -15,7 +14,6 @@ use Throwable;
  *
  * @license See LICENSE in source root
  */
-#[Service]
 final class AmpEventEmitter implements EventEmitter {
 
     /**
