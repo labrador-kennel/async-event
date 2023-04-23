@@ -2,8 +2,6 @@
 
 namespace Labrador\AsyncEvent;
 
-use Cspray\AnnotatedContainer\Attribute\Service;
-
 /**
  * An interface to abstract the creation of Event objects so that your application can replace all Events triggered by
  * Labrador with your own domain-specific type.
@@ -13,7 +11,6 @@ use Cspray\AnnotatedContainer\Attribute\Service;
  *
  * @license See LICENSE file in project root
  */
-#[Service]
 interface EventFactory {
 
     /**

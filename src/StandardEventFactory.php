@@ -2,9 +2,7 @@
 
 namespace Labrador\AsyncEvent;
 
-use Cspray\AnnotatedContainer\Attribute\Service;
 use Labrador\AsyncEvent\Exception\InvalidEventFactory;
-use Labrador\Exception\InvalidTypeException;
 
 /**
  * An EventFactory implementation that will fallback to constructing a StandardEvent in the case where an Event is
@@ -15,7 +13,6 @@ use Labrador\Exception\InvalidTypeException;
  * @package Labrador\AsyncEvent
  * @license See LICENSE in source root
  */
-#[Service]
 final class StandardEventFactory implements EventFactory {
 
     /**
