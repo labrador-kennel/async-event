@@ -25,5 +25,7 @@ jobs:
         env:
           XDEBUG_MODE: coverage
         run: ./vendor/bin/phpunit
+      - name: Psalm
+        run: ./vendor/bin/psalm.phar
       - name: Code Lint
         run: ./vendor/bin/labrador-cs src/ test/
