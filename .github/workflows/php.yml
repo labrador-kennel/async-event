@@ -12,17 +12,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
-      - name: Composer
-        uses: php-actions/composer@v6
+      - uses: actions/checkout@v3
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
         with:
-          php_version: 8.2
+          php-version: 8.2
+          extensions: xdebug
+          tools: composer:2
+      - name: Composer
+        run: composer install
       - name: PHPUnit
-        uses: php-actions/phpunit@v3
         env:
           XDEBUG_MODE: coverage
-        with:
-          version: 10
-          php_extensions: xdebug
+        run: ./vendor/bin/phpunit
       - name: Code Lint
         run: ./vendor/bin/labrador-cs src/ test/
