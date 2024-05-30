@@ -79,7 +79,8 @@ final class AmpEmitter implements Emitter {
             $exceptions === [] ? $deferred->complete($values) : $deferred->error(new CompositeException($exceptions));
         });
         return new class($deferred->getFuture()) implements FinishedNotifier {
-            public function __construct(private readonly Future $future) {}
+            public function __construct(private readonly Future $future) {
+            }
 
             public function finished(callable $callable) : void {
                 $this->future->map(static fn(array $values) => $callable(null, $values))
@@ -102,7 +103,8 @@ final class AmpEmitter implements Emitter {
                 static fn(ListenerInvocationContext $context) => $context->listener,
                 array_filter(
                     $this->listenerInvocationContexts,
-                    static fn(ListenerInvocationContext $listenerInvocationContext) => $listenerInvocationContext->isRegisteredEventName($event)
+                    static fn(ListenerInvocationContext $listenerInvocationContext) =>
+                        $listenerInvocationContext->isRegisteredEventName($event)
                 )
             )
         );

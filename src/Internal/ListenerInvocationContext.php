@@ -3,7 +3,6 @@
 namespace Labrador\AsyncEvent\Internal;
 
 use Amp\Future;
-use JetBrains\PhpStorm\Deprecated;
 use Labrador\AsyncEvent\Event;
 use Labrador\AsyncEvent\ListenerRemovableBasedOnHandleCount;
 use Labrador\AsyncEvent\Listener;
@@ -24,7 +23,8 @@ final class ListenerInvocationContext {
         public readonly Listener             $listener,
         private readonly ListenerRegistration $registration,
         private readonly string               $registeredEvent
-    ) {}
+    ) {
+    }
 
     public function handle(Event $event) : CompositeFuture|NotInvoked {
         if (!$this->isRegisteredEventName($event->name())) {
@@ -41,7 +41,7 @@ final class ListenerInvocationContext {
 
         if ($value === null) {
             return new CompositeFuture([Future::complete()]);
-        } else if ($value instanceof Future) {
+        } elseif ($value instanceof Future) {
             return new CompositeFuture([$value]);
         }
 
@@ -56,9 +56,4 @@ final class ListenerInvocationContext {
         return $this->listener instanceof ListenerRemovableBasedOnHandleCount
             && $this->handledCount === $this->listener->handleLimit();
     }
-
-
-
-
-
 }

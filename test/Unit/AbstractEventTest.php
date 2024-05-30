@@ -34,5 +34,4 @@ final class AbstractEventTest extends TestCase {
         $subject = $this->event('whatever', new stdClass());
         self::assertEqualsWithDelta($now, $subject->triggeredAt(), 0.025);
     }
-
 }

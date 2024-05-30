@@ -8,5 +8,4 @@ namespace Labrador\AsyncEvent;
 interface ListenerRemovableBasedOnHandleCount {
 
     public function handleLimit() : int;
-
 }

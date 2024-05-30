@@ -23,7 +23,6 @@ jobs:
           XDEBUG_MODE: coverage
         with:
           version: 10
-          php_version: 8.2
           php_extensions: xdebug
       - name: Code Lint
-        run: composer run-script code-lint
+        run: ./vendor/bin/labrador-cs src/ test/

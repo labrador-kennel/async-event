@@ -195,7 +195,10 @@ final class AmpEventEmitterTest extends AsyncTestCase {
         $event->shouldReceive('name')->withNoArgs()->andReturn('added');
 
         $listener = Mockery::mock(Listener::class);
-        $listener->shouldReceive('handle')->once()->with($event)->andThrow($exception = new \RuntimeException('My exceptional circumstances'));
+        $listener->shouldReceive('handle')
+            ->once()
+            ->with($event)
+            ->andThrow($exception = new \RuntimeException('My exceptional circumstances'));
 
         $subject->register('added', $listener);
 

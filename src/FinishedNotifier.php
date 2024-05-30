@@ -14,5 +14,4 @@ interface FinishedNotifier {
      * @return void
      */
     public function finished(callable $callable) : void;
-
 }

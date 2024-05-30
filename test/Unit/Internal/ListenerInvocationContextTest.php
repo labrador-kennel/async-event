@@ -31,12 +31,15 @@ final class ListenerInvocationContextTest extends MockeryTestCase {
         $this->registration = Mockery::mock(ListenerRegistration::class);
     }
 
-    public function testHandleRegisteredEventWithListenerReturnsFutureResultsInCompositeFutureThatCompletedValue() : void {
+    public function testHandleRegisteredEventListenerReturnsFutureResultsInCompositeFutureThatCompletedValue() : void {
         $subject = new ListenerInvocationContext($this->listener, $this->registration, 'foo');
 
         $event = Mockery::mock(Event::class);
         $event->shouldReceive('name')->withNoArgs()->andReturn('foo');
-        $this->listener->shouldReceive('handle')->once()->with($event)->andReturn(Future::complete('from my test'));
+        $this->listener->shouldReceive('handle')
+            ->once()
+            ->with($event)
+            ->andReturn(Future::complete('from my test'));
         $this->registration->shouldReceive('remove')->never();
 
         $compositeFuture = $subject->handle($event);
@@ -49,7 +52,7 @@ final class ListenerInvocationContextTest extends MockeryTestCase {
         self::assertSame(['from my test'], $values);
     }
 
-    public function testHandleRegisteredEventWithListenerReturnsNullValueResultsInCompositeFutureWithSingleCompletedFuture() : void {
+    public function testHandleRegisteredEventListenerReturnsNullValueCompositeFutureSingleCompletedFuture() : void {
         $subject = new ListenerInvocationContext($this->listener, $this->registration, 'foo');
 
         $event = Mockery::mock(Event::class);
@@ -68,7 +71,10 @@ final class ListenerInvocationContextTest extends MockeryTestCase {
 
         $event = Mockery::mock(Event::class);
         $event->shouldReceive('name')->withNoArgs()->andReturn('foo');
-        $this->listener->shouldReceive('handle')->once()->with($event)->andReturn($expected = new CompositeFuture([Future::complete()]));
+        $this->listener->shouldReceive('handle')
+            ->once()
+            ->with($event)
+            ->andReturn($expected = new CompositeFuture([Future::complete()]));
         $this->registration->shouldReceive('remove')->never();
 
         $actual = $subject->handle($event);
@@ -104,5 +110,4 @@ final class ListenerInvocationContextTest extends MockeryTestCase {
 
         self::assertSame(NotInvoked::create(), $actual);
     }
-
 }

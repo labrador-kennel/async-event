@@ -10,12 +10,12 @@ use PHPUnit\Framework\Attributes\CodeCoverageIgnore;
 final class NotInvoked {
 
     /** @codeCoverageIgnore  */
-    private function __construct() {}
+    private function __construct() {
+    }
 
     public static function create() : self {
         /** @var NotInvoked|null $instance */
         static $instance;
         return $instance ??= new self();
     }
-
 }

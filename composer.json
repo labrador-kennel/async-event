@@ -11,10 +11,6 @@
       "role": "Project Maintainer"
     }
   ],
-  "scripts": {
-    "code-lint": "vendor/bin/labrador-cs src/ test/",
-    "test": "vendor/bin/phpunit"
-  },
   "repositories": [
     {
       "type": "vcs",
