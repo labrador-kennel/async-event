@@ -6,222 +6,213 @@ use Amp\CompositeException;
 use Amp\DeferredFuture;
 use Amp\Future;
 use Amp\PHPUnit\AsyncTestCase;
-use Labrador\AsyncEvent\AmpEventEmitter;
-use Labrador\AsyncEvent\OneTimeListener;
-use Labrador\AsyncEvent\StandardEvent;
-use Labrador\AsyncEvent\Test\Unit\Stub\AddToValueStoreListener;
-use Labrador\AsyncEvent\Test\Unit\Stub\StubEventListener;
-use Labrador\AsyncEvent\Test\Unit\Stub\StubEventListenerProvider;
-use Labrador\AsyncEvent\Test\Unit\Stub\ValueStore;
+use Labrador\AsyncEvent\AmpEmitter;
+use Labrador\AsyncEvent\Event;
+use Labrador\AsyncEvent\ListenerRemovableBasedOnHandleCount;
+use Labrador\AsyncEvent\Listener;
 use Labrador\CompositeFuture\CompositeFuture;
+use Mockery;
+use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use Revolt\EventLoop;
+use stdClass;
 
-class AmpEventEmitterTest extends AsyncTestCase {
+/**
+ * @covers \Labrador\AsyncEvent\AmpEmitter
+ */
+final class AmpEventEmitterTest extends AsyncTestCase {
 
-    private function standardEvent(string $name, $target = null, array $eventData = []) {
-        $target = $target ?? new \stdClass();
-        return new StandardEvent($name, $target, $eventData);
+    use MockeryPHPUnitIntegration;
+
+    protected function tearDown() : void {
+        EventLoop::setErrorHandler(null);
     }
 
     public function testRegisteringEventListenerIncrementsListenerCount() {
-        $subject = new AmpEventEmitter();
-        $subject->register(new StubEventListener('something', Future::complete()));
+        $subject = new AmpEmitter();
 
-        self::assertSame(1, $subject->listenerCount('something'));
+        $a = Mockery::mock(Listener::class);
+        $b = Mockery::mock(Listener::class);
 
-        $subject->register(new StubEventListener('something', Future::complete()));
+        $subject->register('something', $a);
 
-        self::assertSame(2, $subject->listenerCount('something'));
+        self::assertSame([$a], $subject->listeners('something'));
+
+        $subject->register('something', $b);
+
+        self::assertSame([$a, $b], $subject->listeners('something'));
     }
 
     public function testRemovingEventListenerDecrementsListenerCount() {
-        $subject = new AmpEventEmitter();
-        $registrationOne = $subject->register(new StubEventListener('something', Future::complete()));
-        $registrationTwo = $subject->register(new StubEventListener('something', Future::complete()));
+        $subject = new AmpEmitter();
 
-        self::assertSame(2, $subject->listenerCount('something'));
+        $a = Mockery::mock(Listener::class);
+        $b = Mockery::mock(Listener::class);
 
-        $registrationOne->remove();
+        $registrationA = $subject->register('foo', $a);
+        $registrationB = $subject->register('foo', $b);
 
-        self::assertSame(1, $subject->listenerCount('something'));
+        self::assertSame([$a, $b], $subject->listeners('foo'));
 
-        $registrationTwo->remove();
+        $registrationA->remove();
 
-        self::assertSame(0, $subject->listenerCount('something'));
-    }
+        self::assertSame([$b], $subject->listeners('foo'));
 
-    public function testRegisteringEventListenerIsReturnedInListeners() {
-        $subject = new AmpEventEmitter();
+        $registrationB->remove();
 
-        $subject->register($listener1 = new StubEventListener('something', Future::complete()));
-        $subject->register($listener2 = new StubEventListener('something', Future::complete()));
-        $expected = [$listener1, $listener2];
-
-        $actual = $subject->getListeners('something');
-        self::assertEquals($expected, $actual);
+        self::assertSame([], $subject->listeners('foo'));
     }
 
     public function testReturnedListenersRespectHandleableEvents() : void {
-        $subject = new AmpEventEmitter();
+        $subject = new AmpEmitter();
 
-        $subject->register(new StubEventListener('foo', Future::complete()));
-        $subject->register($listener2 = new StubEventListener('something', Future::complete()));
-        $expected = [$listener2];
+        $a = Mockery::mock(Listener::class);
+        $b = Mockery::mock(Listener::class);
 
-        $actual = $subject->getListeners('something');
-        self::assertEquals($expected, $actual);
-    }
+        $subject->register('foobar', $a);
+        $subject->register('something', $b);
 
-    public function testListenerCountRespectHandleableEvents() : void {
-        $subject = new AmpEventEmitter();
-
-        $subject->register(new StubEventListener('foo', Future::complete()));
-        $subject->register(new StubEventListener('something', Future::complete()));
-
-        self::assertCount(1, $subject->getListeners('foo'));
+        self::assertEquals([$b], $subject->listeners('something'));
     }
 
     public function testListenerCountWithNoRegisteredListeners() {
-        $subject = new AmpEventEmitter();
+        $subject = new AmpEmitter();
 
-        self::assertSame(0, $subject->listenerCount('something'));
+        self::assertSame([], $subject->listeners('something'));
     }
 
-    public function testListenersWithNoRegisteredListeners() {
-        $subject = new AmpEventEmitter();
+    public function testEmittingEventInvokesRegisteredListeners() : void {
+        $subject = new AmpEmitter();
 
-        self::assertSame([], $subject->getListeners('something'));
-    }
+        $listener = Mockery::mock(Listener::class);
+        $event = Mockery::mock(Event::class);
+        $event->shouldReceive('name')->once()->withNoArgs()->andReturn('foobar');
+        $listener->shouldReceive('handle')->once()->with($event)->andReturnNull();
 
-    public function testEmittingEvent() : void {
-        $subject = new AmpEventEmitter();
-        $subject->register($listener = new StubEventListener('foo', Future::complete()));
-
-        $event = $this->standardEvent('foo');
-        $subject->emit($event)->await();
-
-        self::assertSame($event, $listener->getEvent());
-    }
-
-    public function testRegistrationAddedToListener() : void {
-        $subject = new AmpEventEmitter();
-        $registration = $subject->register(
-            $listener = new StubEventListener('foo', Future::complete())
-        );
-
-        $subject->emit($this->standardEvent('foo'));
-
-        self::assertSame($registration, $listener->getRegistration());
+        $subject->register('foobar', $listener);
+        $subject->emit($event);
     }
 
     public function testEmittingEventRespectsHandleableListeners() : void {
-        $subject = new AmpEventEmitter();
+        $subject = new AmpEmitter();
 
-        $subject->register(new StubEventListener('foo', Future::complete('foo')));
-        $subject->register(new StubEventListener('something', Future::complete('something')));
+        $event = Mockery::mock(Event::class);
+        $a = Mockery::mock(Listener::class);
+        $b = Mockery::mock(Listener::class);
 
-        $resolved = $subject->emit($this->standardEvent('something'))->await();
+        $event->shouldReceive('name')->withNoArgs()->andReturn('something');
+        $a->shouldReceive('handle')->once()->with($event)->andReturnNull();
+        $b->shouldReceive('handle')->never();
 
-        self::assertSame(['something'], $resolved);
+        $subject->register('something', $a);
+        $subject->register('foo', $b);
+
+        $subject->emit($event);
     }
 
     public function testEmittingEventHandlesMultipleListeners() : void {
-        $subject = new AmpEventEmitter();
+        $subject = new AmpEmitter();
 
-        $subject->register(new StubEventListener('something', Future::complete('foo')));
-        $subject->register(new StubEventListener('something', Future::complete('something')));
-        $subject->register(new StubEventListener('foo', Future::complete('bad')));
-        $subject->register(new StubEventListener('something', Future::complete('bar')));
+        $event = Mockery::mock(Event::class);
+        $event->shouldReceive('name')->withNoArgs()->andReturn('something');
 
-        $resolved = $subject->emit($this->standardEvent('something'))->await();
+        $a = Mockery::mock(Listener::class);
+        $a->shouldReceive('handle')->once()->with($event)->andReturnNull();
 
-        self::assertSame(['foo', 'something', 'bar'], $resolved);
-    }
+        $b = Mockery::mock(Listener::class);
+        $b->shouldReceive('handle')->once()->with($event)->andReturnNull();
 
-    public function testEmittingEventHandlesNullReturnValue() : void {
-        $subject = new AmpEventEmitter();
+        $c = Mockery::mock(Listener::class);
+        $c->shouldReceive('handle')->never();
 
-        $subject->register(new StubEventListener('bar', null));
+        $d = Mockery::mock(Listener::class);
+        $d->shouldReceive('handle')->once()->with($event)->andReturnNull();
 
-        $resolved = $subject->emit($this->standardEvent('bar'))->await();
+        $subject->register('something', $a);
+        $subject->register('something', $b);
+        $subject->register('foo', $c);
+        $subject->register('something', $d);
 
-        self::assertSame([null], $resolved);
-    }
-
-    public function testEmittingAllPossibleReturnValues() : void {
-        $subject = new AmpEventEmitter();
-
-        $subject->register(new StubEventListener('something', Future::complete('foo')));
-        $subject->register(
-            new StubEventListener(
-                'something',
-                new CompositeFuture([Future::complete('baz'), Future::complete('qux')])
-            )
-        );
-        $subject->register(new StubEventListener('foo', Future::complete('bad')));
-        $subject->register(new StubEventListener('something', null));
-
-        $resolved = $subject->emit($this->standardEvent('something'))->await();
-
-        self::assertSame(['baz', 'qux', 'foo', null], $resolved);
+        $subject->emit($event);
     }
 
     public function testRunningListenerOnce() {
-        $valueStore = new ValueStore();
-        $listener = new AddToValueStoreListener($valueStore, 'foo', 1);
-        $subject = new AmpEventEmitter();
-        $subject->register(new OneTimeListener($listener));
+        $subject = new AmpEmitter();
 
-        $subject->emit($this->standardEvent('foo'))->await();
-        $subject->emit($this->standardEvent('foo'))->await();
+        $event = Mockery::mock(Event::class);
+        $event->shouldReceive('name')->withNoArgs()->andReturn('foobar');
+        $listener = Mockery::mock(Listener::class, ListenerRemovableBasedOnHandleCount::class);
+        $listener->shouldReceive('handle')->once()->with($event)->andReturnNull();
+        $listener->shouldReceive('handleLimit')->twice()->withNoArgs()->andReturn(1);
 
-        $this->assertSame([1], $valueStore->getValues());
+        $subject->register('foobar', $listener);
+
+        $subject->emit($event);
+        $subject->emit($event);
     }
 
     public function testQueueing() : void {
-        $valueStore = new ValueStore();
-        $listener = new AddToValueStoreListener($valueStore, 'foo', 1);
-        $subject = new AmpEventEmitter();
-        $subject->register($listener);
-        $subject->register(new OneTimeListener($listener));
+        $event = Mockery::mock(Event::class);
+        $event->shouldReceive('name')->withNoArgs()->andReturn('baz');
 
-        $subject->queue($this->standardEvent('foo'));
+        $a = Mockery::mock(Listener::class);
+        $a->shouldReceive('handle')->once()->with($event)->andReturn(null);
 
-        // Force the event loop to tick again, otherwise our queued events won't run
+        $b = Mockery::mock(Listener::class);
+        $b->shouldReceive('handle')->once()->with($event)->andReturn(Future::complete('future-value'));
+
+        $c = Mockery::mock(Listener::class);
+        $c->shouldReceive('handle')->once()->with($event)->andReturn(new CompositeFuture([
+            Future::complete('composite-1'),
+            Future::complete('composite-2'),
+            Future::complete('composite-3')
+        ]));
+
+        $subject = new AmpEmitter();
+        $subject->register('baz', $a);
+        $subject->register('baz', $b);
+        $subject->register('baz', $c);
+
+        $data = new stdClass();
+        $data->exception = null;
+        $data->values = null;
+        $subject->queue($event)->finished(function (?CompositeException $exception, array $values) use($data) {
+            $data->exception = $exception;
+            $data->values = $values;
+        });
+
         $deferred = new DeferredFuture();
-        EventLoop::defer(static fn() => $deferred->complete());
+        EventLoop::defer(fn() => $deferred->complete());
         $deferred->getFuture()->await();
 
-        self::assertSame([1, 1], $valueStore->getValues());
+        self::assertNull($data->exception);
+        self::assertSame([null, 'future-value', 'composite-1', 'composite-2', 'composite-3'], $data->values);
     }
 
     public function testQueueingFailure() : void {
-        $listener = new StubEventListener('foo', Future::error($error = new \RuntimeException()));
-        $subject = new AmpEventEmitter();
-        $subject->register($listener);
+        $subject = new AmpEmitter();
 
-        $subject->queue($this->standardEvent('foo'));
+        $event = Mockery::mock(Event::class);
+        $event->shouldReceive('name')->withNoArgs()->andReturn('added');
 
-        $data = new \stdClass();
-        $data->throwable = null;
-        EventLoop::setErrorHandler(fn($throwable) => $data->throwable = $throwable);
+        $listener = Mockery::mock(Listener::class);
+        $listener->shouldReceive('handle')->once()->with($event)->andThrow($exception = new \RuntimeException('My exceptional circumstances'));
 
-        // Force the event loop to tick again, otherwise our queued events won't run
+        $subject->register('added', $listener);
+
+        $data = new stdClass();
+        $data->exception = null;
+        $data->values = null;
+        $subject->queue($event)->finished(function (?CompositeException $exception, array $values) use($data) {
+            $data->exception = $exception;
+            $data->values = $values;
+        });
+
         $deferred = new DeferredFuture();
-        EventLoop::defer(static fn() => $deferred->complete());
+        EventLoop::defer(fn() => $deferred->complete());
         $deferred->getFuture()->await();
 
-        self::assertInstanceOf(CompositeException::class, $data->throwable);
-        self::assertSame($data->throwable->getReasons(), [$error]);
-    }
-
-    public function testProviderGivenCallsCorrespondingListener() : void {
-        $listenerProvider = new StubEventListenerProvider('something', null);
-
-        $subject = new AmpEventEmitter();
-        $subject->register($listenerProvider);
-        $subject->emit($event = $this->standardEvent('something'));
-
-        self::assertSame($event, $listenerProvider->getHandledEvent());
+        self::assertInstanceOf(CompositeException::class, $data->exception);
+        self::assertSame([], $data->values);
+        self::assertSame([$exception], $data->exception->getReasons());
     }
 }

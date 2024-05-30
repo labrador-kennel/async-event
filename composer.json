@@ -15,15 +15,22 @@
     "code-lint": "vendor/bin/labrador-cs src/ test/",
     "test": "vendor/bin/phpunit"
   },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/cspray/phpunit-util"
+    }
+  ],
   "require": {
-    "php": "^8.1",
+    "php": "^8.2",
     "amphp/amp": "~v3.0",
     "labrador-kennel/composite-future": "^1.2"
   },
   "require-dev": {
-    "amphp/phpunit-util": "~v3.0",
+    "amphp/phpunit-util": "dev-phpunit-10-support",
     "cspray/labrador-coding-standard": "0.2.0",
-    "phpunit/phpunit": "^9.5",
+    "mockery/mockery": "^1.6",
+    "phpunit/phpunit": "^10",
     "psalm/phar": "^5.6",
     "roave/security-advisories": "dev-latest"
   },
@@ -36,5 +43,8 @@
     "psr-4": {
       "Labrador\\AsyncEvent\\Test\\": "test/"
     }
+  },
+  "suggest": {
+    "labrador-kennel/async-event-autowire": "If using cspray/annotated-container will allow you to automatically register Listener implementations into your Emitter."
   }
 }

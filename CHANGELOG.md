@@ -1,18 +1,40 @@
 # Changelog
 
-## Unreleased Changes
+## v4.0.0
 
 #### Added
 
-- Provided tests for the `ListenerService` attribute, code coverage is not at 100%.
+- Added the `Labrador\AsyncEvent\ListenerRemovableBasedOnHandleCount`
+- Added template parameters where appropriate to more properly convey typing information
+- Added a `Labrador\AsyncEvent\AbstractEvent` to more easily create domain events out of the box.
+- Added a `Labrador\AsyncEvent\FinishedNotifier` to represent when a queued event has finished being emitted
 
 #### Changed
 
-- Renamed the `EventListener` attribute to `ListenerService`.
+- Renamed `Labrador\AsyncEvent\EventEmitter` -> `Labrador\AsyncEvent\Emitter`
+- Renamed `Labrador\AsyncEvent\AmpEventEmitter` -> `Labrador\AsyncEvent\AmpEmitter`
+- Renamed `Labrador\AsyncEvent\Event::target()` -> `Labrador\AsyncEvent\Event::payload()`
+- Changed the `Emitter::register(Listener)` method signature to `Emitter::register(string, Listener)` where the 
+first argument is the event name to register.
+- Changed the `Emitter::queue(Event) : void` method signature to `Emitter::queue(Event) : FinishedNotifier` to allow
+doing something when a queued event is finished being emitted without potentially blocking, negating the intent of a
+queued fire & forget event.
 
 #### Removed
 
-- Removed `cspray/annotated-container` library. The functionality previously provided by these  
+- Removed the `Labrador\AsyncEvent\OneTimeListener`. Implement the `Labrador\AsyncEvent\ListenerRemovableBasedOnHandleCount` interface to 
+replicate this functionality.
+- Removed the `Labrador\AsyncEvent\ListenerProvider` interface and implementations. 
+- Removed the `Labrador\AsyncEvent\Listener::setRegistration` method. Registration removal and association to the listener
+is handled internally without leaking this detail to listeners.
+
+
+## v3.0.0
+
+#### Removed
+
+- Removed `cspray/annotated-container` library. The functionality previously provided by the implementations using this
+library are available at `labrador-kennel/async-event-autowire`
 
 ## v3.0.0-beta1
 
