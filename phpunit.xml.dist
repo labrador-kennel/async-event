@@ -3,7 +3,9 @@
   <coverage>
     <report>
       <text outputFile="php://stdout"/>
+      <!--
       <html outputDirectory="build/code-coverage/html" />
+      -->
     </report>
   </coverage>
   <testsuites>

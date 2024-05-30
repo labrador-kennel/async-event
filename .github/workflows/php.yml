@@ -14,13 +14,14 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Composer
-        uses: php-actions/composer@v5
+        uses: php-actions/composer@v6
         with:
           php_version: 8.2
       - name: PHPUnit
-        uses: php-actions/phpunit@v2
+        uses: php-actions/phpunit@v3
         with:
           version: 10
           php_version: 8.2
+          php_extensions: xdebug
       - name: Code Lint
         run: composer run-script code-lint
