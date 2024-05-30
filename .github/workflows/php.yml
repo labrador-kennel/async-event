@@ -19,6 +19,8 @@ jobs:
           php_version: 8.2
       - name: PHPUnit
         uses: php-actions/phpunit@v3
+        env:
+          XDEBUG_MODE: coverage
         with:
           version: 10
           php_version: 8.2
