@@ -3,12 +3,12 @@
 namespace Labrador\AsyncEvent;
 
 use DateTimeImmutable;
-use DateTimeInterface;
 
 /**
  * Implementations that represent a semantic event triggered by Labrador or a Labrador powered Application.
  *
- * @package Labrador\AsyncEvent
+ * @template Payload of object
+ * @api
  */
 interface Event {
 
@@ -16,9 +16,9 @@ interface Event {
      * The name of the Event being invoked; this value is passed to Listener::canHandle to determine if the given
      * Listener should be invoked.
      *
-     * @return string
+     * @return non-empty-string
      */
-    public function getName() : string;
+    public function name() : string;
 
     /**
      * An object that represents the target of the event.
@@ -27,24 +27,14 @@ interface Event {
      * of the event should be apparent. If your targets are not intrinsically targeting an object it may be a sign that
      * your types are not fully designed.
      *
-     * @return object
+     * @return Payload
      */
-    public function getTarget() : object;
-
-    /**
-     * An arbitrary set of data associated to this Event.
-     *
-     * Perhaps the target alone is not sufficient data to pass about this event or there is meta-data that you'd like
-     * to associate with the event (e.g. what host triggered an event in a network-enabled emitter).
-     *
-     * @return array
-     */
-    public function getData() : array;
+    public function payload() : object;
 
     /**
      * The time that the Event was triggered.
      *
      * @return DateTimeImmutable
      */
-    public function getCreatedAt() : DateTimeImmutable;
+    public function triggeredAt() : DateTimeImmutable;
 }

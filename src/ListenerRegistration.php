@@ -4,6 +4,8 @@ namespace Labrador\AsyncEvent;
 
 /**
  * Provides the capacity to remove a Listener.
+ *
+ * @api
  */
 interface ListenerRegistration {
 

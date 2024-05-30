@@ -12,15 +12,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.2
+          extensions: xdebug
+          tools: composer:2
       - name: Composer
-        uses: php-actions/composer@v5
-        with:
-          php_version: 8.1
+        run: composer install
       - name: PHPUnit
-        uses: php-actions/phpunit@v2
-        with:
-          version: 9
-          php_version: 8.1
+        env:
+          XDEBUG_MODE: coverage
+        run: ./vendor/bin/phpunit
+      - name: Psalm
+        run: ./vendor/bin/psalm.phar
       - name: Code Lint
-        run: composer run-script code-lint
+        run: ./vendor/bin/labrador-cs src/ test/

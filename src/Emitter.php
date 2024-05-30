@@ -7,18 +7,19 @@ use Labrador\CompositeFuture\CompositeFuture;
 /**
  * Represents an object that allows listeners to respond to emitted events asynchronously.
  *
- * @package Labrador\AsyncEvent
+ * @api
  */
-interface EventEmitter {
+interface Emitter {
 
     /**
      * Register a Listener to respond to emitted events; the ListenerRegistration returned can be used to remove the
      * Listener.
      *
-     * @param Listener|ListenerProvider $listener
+     * @param non-empty-string $eventName
+     * @param Listener $listener
      * @return ListenerRegistration
      */
-    public function register(Listener|ListenerProvider $listener) : ListenerRegistration;
+    public function register(string $eventName, Listener $listener) : ListenerRegistration;
 
     /**
      * Immediately invokes all registered listeners that can handle the given $event.
@@ -40,21 +41,10 @@ interface EventEmitter {
      * Schedule all registered listeners that can handle the given $event to be invoked on the next tick of the
      * event loop.
      *
-     * On the next tick of the loop, the $event will be passed to EventEmitter::emit. The CompositeFuture that results
-     * will be handled by calling awaitAll. Any exceptions thrown will result in a CompositeException being thrown.
-     *
-     * @param Event $event
-     * @return void
+     * On the next tick of the loop, the $event will be passed to Emitter::emit. The CompositeFuture that results
+     * will be handled by calling awaitAll. The Future returned from this method will
      */
-    public function queue(Event $event) : void;
-
-    /**
-     * Return the number of listeners registered for a specific event.
-     *
-     * @param string $event
-     * @return int
-     */
-    public function listenerCount(string $event) : int;
+    public function queue(Event $event) : FinishedNotifier;
 
     /**
      * Returns a list of Listener implementations that can handle the provided event name.
@@ -62,5 +52,5 @@ interface EventEmitter {
      * @param string $event
      * @return list<Listener>
      */
-    public function getListeners(string $event) : array;
+    public function listeners(string $event) : array;
 }
