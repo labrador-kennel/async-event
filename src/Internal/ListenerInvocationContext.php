@@ -4,6 +4,7 @@ namespace Labrador\AsyncEvent\Internal;
 
 use Amp\Future;
 use Labrador\AsyncEvent\Event;
+use Labrador\AsyncEvent\EventName;
 use Labrador\AsyncEvent\ListenerRemovableBasedOnHandleCount;
 use Labrador\AsyncEvent\Listener;
 use Labrador\AsyncEvent\ListenerRegistration;
@@ -17,13 +18,21 @@ final class ListenerInvocationContext {
     private int $handledCount = 0;
 
     /**
-     * @param non-empty-string $registeredEvent
+     * @var non-empty-string
+     */
+    private readonly string $registeredEvent;
+
+    /**
+     * @template Payload of object
+     * @param Listener<Payload> $listener
+     * @param non-empty-string|EventName $registeredEvent
      */
     public function __construct(
         public readonly Listener             $listener,
         private readonly ListenerRegistration $registration,
-        private readonly string               $registeredEvent
+        string|EventName $registeredEvent
     ) {
+        $this->registeredEvent = $registeredEvent instanceof EventName ? $registeredEvent->name() : $registeredEvent;
     }
 
     public function handle(Event $event) : CompositeFuture|NotInvoked {
@@ -48,8 +57,12 @@ final class ListenerInvocationContext {
         return $value;
     }
 
-    public function isRegisteredEventName(string $eventName) : bool {
-        return $eventName === $this->registeredEvent;
+    /**
+     * @param non-empty-string|EventName $eventName
+     * @return bool
+     */
+    public function isRegisteredEventName(string|EventName $eventName) : bool {
+        return ($eventName instanceof EventName ? $eventName->name() : $eventName) === $this->registeredEvent;
     }
 
     private function isHandleLimitReached() : bool {

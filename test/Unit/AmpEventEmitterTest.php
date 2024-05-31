@@ -10,6 +10,7 @@ use Labrador\AsyncEvent\AmpEmitter;
 use Labrador\AsyncEvent\Event;
 use Labrador\AsyncEvent\ListenerRemovableBasedOnHandleCount;
 use Labrador\AsyncEvent\Listener;
+use Labrador\AsyncEvent\Test\Unit\Helper\MyEnum;
 use Labrador\CompositeFuture\CompositeFuture;
 use Mockery;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
@@ -217,5 +218,25 @@ final class AmpEventEmitterTest extends AsyncTestCase {
         self::assertInstanceOf(CompositeException::class, $data->exception);
         self::assertSame([], $data->values);
         self::assertSame([$exception], $data->exception->getReasons());
+    }
+
+    public function testRegisterEventWithStringBackedEnumAddsToListeners() : void {
+        $subject = new AmpEmitter();
+
+        $a = Mockery::mock(Listener::class);
+
+        $subject->register(MyEnum::Foo, $a);
+
+        self::assertSame([$a], $subject->listeners('foo'));
+    }
+
+    public function testRetrieveListenersWithSameEnumUsedToRegister() : void {
+        $subject = new AmpEmitter();
+
+        $a = Mockery::mock(Listener::class);
+
+        $subject->register(MyEnum::Foo, $a);
+
+        self::assertSame([$a], $subject->listeners(MyEnum::Foo));
     }
 }
