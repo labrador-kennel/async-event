@@ -8,5 +8,4 @@ interface EventName {
      * @return non-empty-string
      */
     public function name() : string;
-
 }
