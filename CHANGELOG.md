@@ -1,5 +1,18 @@
 # Changelog
 
+## v4.1.0
+
+#### Added 
+
+- Added the `Labrador\AsyncEvent\EventName` interface to allow for enums and other 
+objects to be used as event names when appropriate
+
+#### Changed
+
+- Updated the `Labrador\AsyncEvent\Emitter::register()` and `Emitter::listeners` 
+methods to accept a `non-empty-string|EventName`.
+- Added proper template types to the `Emitter::emit` and `Emitter::queue` methods
+
 ## v4.0.0
 
 #### Added

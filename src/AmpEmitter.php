@@ -9,7 +9,6 @@ use Closure;
 use Labrador\AsyncEvent\Internal\ListenerInvocationContext;
 use Labrador\AsyncEvent\Internal\NotInvoked;
 use Labrador\CompositeFuture\CompositeFuture;
-use Random\RandomException;
 use Revolt\EventLoop;
 use Throwable;
 
@@ -23,11 +22,7 @@ final class AmpEmitter implements Emitter {
      */
     private array $listenerInvocationContexts = [];
 
-    /**
-     * @param non-empty-string $eventName
-     * @throws RandomException
-     */
-    public function register(string $eventName, Listener $listener) : ListenerRegistration {
+    public function register(string|EventName $eventName, Listener $listener) : ListenerRegistration {
         $listenerKey = random_bytes(16);
         $context = new ListenerInvocationContext(
             $listener,
@@ -94,10 +89,7 @@ final class AmpEmitter implements Emitter {
         };
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function listeners(string $event) : array {
+    public function listeners(string|EventName $event) : array {
         return array_values(
             array_map(
                 static fn(ListenerInvocationContext $context) => $context->listener,

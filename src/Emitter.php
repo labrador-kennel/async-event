@@ -3,6 +3,7 @@
 namespace Labrador\AsyncEvent;
 
 use Labrador\CompositeFuture\CompositeFuture;
+use Stringable;
 
 /**
  * Represents an object that allows listeners to respond to emitted events asynchronously.
@@ -15,11 +16,12 @@ interface Emitter {
      * Register a Listener to respond to emitted events; the ListenerRegistration returned can be used to remove the
      * Listener.
      *
-     * @param non-empty-string $eventName
-     * @param Listener $listener
+     * @template Payload of object
+     * @param non-empty-string|EventName $eventName
+     * @param Listener<Event<Payload>> $listener
      * @return ListenerRegistration
      */
-    public function register(string $eventName, Listener $listener) : ListenerRegistration;
+    public function register(string|EventName $eventName, Listener $listener) : ListenerRegistration;
 
     /**
      * Immediately invokes all registered listeners that can handle the given $event.
@@ -32,8 +34,8 @@ interface Emitter {
      * It is important that the CompositeFuture returned has a method invoked that awaits completion! If you don't
      * explicitly call a method on the CompositeFuture the behavior for how Listeners will behave is undefined.
      *
-     * @param Event $event
-     * @return CompositeFuture
+     * @template Payload of object
+     * @param Event<Payload> $event
      */
     public function emit(Event $event) : CompositeFuture;
 
@@ -43,14 +45,17 @@ interface Emitter {
      *
      * On the next tick of the loop, the $event will be passed to Emitter::emit. The CompositeFuture that results
      * will be handled by calling awaitAll. The Future returned from this method will
+     *
+     * @template Payload of object
+     * @param Event<Payload> $event
      */
     public function queue(Event $event) : FinishedNotifier;
 
     /**
      * Returns a list of Listener implementations that can handle the provided event name.
      *
-     * @param string $event
+     * @param non-empty-string|EventName $event
      * @return list<Listener>
      */
-    public function listeners(string $event) : array;
+    public function listeners(string|EventName $event) : array;
 }
